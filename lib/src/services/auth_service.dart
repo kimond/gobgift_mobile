@@ -4,10 +4,10 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const ApiBaseUrl = "http://gobgift.kimond.com";
+const ApiBaseUrl = "https://gobgift.kimond.com";
 
 class AuthProvider {
-  final String  authProviderAsString;
+  final String authProviderAsString;
 
   AuthProvider._(this.authProviderAsString);
 
@@ -18,20 +18,21 @@ class AuthProvider {
 class AuthService {
   static const String KEY_OAUTH_TOKEN = 'KEY_AUTH_TOKEN';
 
-  bool _loggedIn;
+  bool loggedIn;
   bool _initialized;
-  Client _client;
+  final Client _client = new Client();
   OauthClient _oauthClient;
 
   Future init() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String oauthToken = prefs.getString(KEY_OAUTH_TOKEN);
+    print(oauthToken);
 
     if (oauthToken == null) {
-      _loggedIn = false;
+      loggedIn = false;
       await logout();
     } else {
-      _loggedIn = true;
+      loggedIn = true;
       _oauthClient = new OauthClient(_client, oauthToken);
     }
 
@@ -40,28 +41,30 @@ class AuthService {
 
   Future logout() async {
     await _saveTokens(null);
-    _loggedIn = false;
+    loggedIn = false;
   }
 
   Future<bool> login(AuthProvider provider, String providerToken) async {
+    final String authUrl = '$ApiBaseUrl/rest-auth/${provider
+        .authProviderAsString}/';
+    final requestHeader = {'Content-type': 'application/json'};
     final requestBody = JSON.encode({
       'access_token': providerToken,
     });
 
-    final loginResponse = await _client.post(
-        '$ApiBaseUrl/${provider.authProviderAsString}/',
-        body: requestBody)
+    final loginResponse = await _client
+        .post(authUrl, headers: requestHeader, body: requestBody)
         .whenComplete(_client.close);
 
-    if (loginResponse.statusCode == 201) {
+    if (loginResponse.statusCode == 200) {
       final bodyJson = JSON.decode(loginResponse.body);
-      await _saveTokens(bodyJson['token']);
-      _loggedIn = true;
+      await _saveTokens(bodyJson['key']);
+      loggedIn = true;
     } else {
-      _loggedIn = false;
+      loggedIn = false;
     }
 
-    return _loggedIn;
+    return loggedIn;
   }
 
   Future _saveTokens(String oauthToken) async {
