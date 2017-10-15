@@ -17,6 +17,8 @@ class GroupPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<GroupPage> {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
   final _authService = new AuthService();
   GobgiftApi api;
   List<Group> _groups = [];
@@ -24,6 +26,10 @@ class _LoginPageState extends State<GroupPage> {
   void initState() {
     super.initState();
     fetchGroups();
+  }
+
+  Future<Null> _handleRefresh() async {
+    await fetchGroups();
   }
 
   Future fetchGroups() async {
@@ -40,7 +46,8 @@ class _LoginPageState extends State<GroupPage> {
     secondary = const Text("Owner:");
     return new MergeSemantics(
       child: new ListTile(
-        leading: new ExcludeSemantics(child: new CircleAvatar(child: new Text(group.name[0]))),
+        leading: new ExcludeSemantics(
+            child: new CircleAvatar(child: new Text(group.name[0]))),
         title: new Text('${group.name}'),
         subtitle: secondary,
       ),
@@ -55,11 +62,15 @@ class _LoginPageState extends State<GroupPage> {
       appBar: new AppBar(
         title: new Text('Gobgift'),
       ),
-      body: new Scrollbar(
-        child: new ListView(
-          padding: new EdgeInsets.symmetric(vertical: 8.0),
-          children: listTiles.toList(),
+      body: new RefreshIndicator(
+        key: _refreshIndicatorKey,
+        child: new Scrollbar(
+          child: new ListView(
+            padding: new EdgeInsets.symmetric(vertical: 8.0),
+            children: listTiles.toList(),
+          ),
         ),
+        onRefresh: _handleRefresh,
       ),
       floatingActionButton: new FloatingActionButton(
         onPressed: null,
