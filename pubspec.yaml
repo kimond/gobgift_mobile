@@ -8,10 +8,12 @@ dependencies:
   flutter_facebook_connect: "^0.0.3"
   google_sign_in: "^0.3.1"
   shared_preferences: "^0.2.5"
+  json_serializable: "^0.2.4+1"
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner: "^0.5.0"
 
 
 # For information on the generic Dart part of this file, see the
