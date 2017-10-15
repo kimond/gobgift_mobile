@@ -21,19 +21,18 @@ class AuthService {
   bool loggedIn;
   bool _initialized;
   final Client _client = new Client();
-  OauthClient _oauthClient;
+  OauthClient oauthClient;
 
   Future init() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String oauthToken = prefs.getString(KEY_OAUTH_TOKEN);
-    print(oauthToken);
 
     if (oauthToken == null) {
       loggedIn = false;
       await logout();
     } else {
       loggedIn = true;
-      _oauthClient = new OauthClient(_client, oauthToken);
+      oauthClient = new OauthClient(_client, oauthToken);
     }
 
     _initialized = true;
@@ -71,7 +70,7 @@ class AuthService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(KEY_OAUTH_TOKEN, oauthToken);
     await prefs.commit();
-    _oauthClient = new OauthClient(_client, oauthToken);
+    oauthClient = new OauthClient(_client, oauthToken);
   }
 }
 
