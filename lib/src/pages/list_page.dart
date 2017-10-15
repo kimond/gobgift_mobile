@@ -1,50 +1,50 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:gobgift_mobile/src/models/group.dart';
+import 'package:gobgift_mobile/src/models/wish_list.dart';
 import 'package:gobgift_mobile/src/services/auth_service.dart';
 import 'package:gobgift_mobile/src/services/gobgift_api.dart';
 
-class GroupPage extends StatefulWidget {
-  GroupPage({Key key}) : super(key: key);
+class ListPage extends StatefulWidget {
+  ListPage({Key key}) : super(key: key);
 
   @override
-  _GroupPageState createState() => new _GroupPageState();
+  _ListPageState createState() => new _ListPageState();
 }
 
-class _GroupPageState extends State<GroupPage> {
+class _ListPageState extends State<ListPage> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   final _authService = new AuthService();
   GobgiftApi api;
-  List<Group> _groups = [];
+  List<WishList> _wishLists = [];
 
   void initState() {
     super.initState();
-    fetchGroups();
+    fetchWishLists();
   }
 
   Future<Null> _handleRefresh() async {
-    await fetchGroups();
+    await fetchWishLists();
   }
 
-  Future fetchGroups() async {
+  Future fetchWishLists() async {
     await _authService.init();
     api = new GobgiftApi(_authService);
-    List<Group> groups = await api.getGroups();
+    List<WishList> wishLists = await api.getWishLists();
     setState(() {
-      _groups = groups;
+      _wishLists = wishLists;
     });
   }
 
-  Widget buildListTile(BuildContext context, Group group) {
+  Widget buildListTile(BuildContext context, WishList wishList) {
     Widget secondary;
-    secondary = const Text("Owner:");
+    secondary = const Text("Groups:");
     return new MergeSemantics(
       child: new ListTile(
         leading: new ExcludeSemantics(
-            child: new CircleAvatar(child: new Text(group.name[0]))),
-        title: new Text('${group.name}'),
+            child: new CircleAvatar(child: new Text(wishList.name[0]))),
+        title: new Text('${wishList.name}'),
         subtitle: secondary,
       ),
     );
@@ -53,7 +53,7 @@ class _GroupPageState extends State<GroupPage> {
   @override
   Widget build(BuildContext context) {
     Iterable<Widget> listTiles =
-        _groups.map((Group group) => buildListTile(context, group));
+        _wishLists.map((WishList group) => buildListTile(context, group));
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('Gobgift'),

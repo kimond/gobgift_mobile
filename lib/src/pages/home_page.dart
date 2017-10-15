@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gobgift_mobile/src/pages/group_page.dart';
+import 'package:gobgift_mobile/src/pages/list_page.dart';
 import 'package:gobgift_mobile/src/services/auth_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -32,9 +33,9 @@ class _HomePageState extends State<Homepage> with TickerProviderStateMixin {
       ),
       new NavigationIconView(
         icon: const Icon(Icons.event_note),
-        body: new GroupPage(),
+        body: new ListPage(),
         title: const Text('My lists'),
-        color: new Color.fromARGB(0xFF, 0xF4, 0x43, 0x36),
+        color: new Color.fromARGB(0xFF, 0x34, 0x73, 0x36),
         vsync: this,
       ),
     ];
