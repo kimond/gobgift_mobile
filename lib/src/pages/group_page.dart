@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gobgift_mobile/src/models/group.dart';
 import 'package:gobgift_mobile/src/services/auth_service.dart';
 import 'package:gobgift_mobile/src/services/gobgift_api.dart';
+import 'package:gobgift_mobile/src/widgets/add_group_dialog.dart';
 
 class GroupPage extends StatefulWidget {
   GroupPage({Key key}) : super(key: key);
@@ -69,8 +70,21 @@ class _GroupPageState extends State<GroupPage> {
         onRefresh: _handleRefresh,
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: null,
-        tooltip: 'Increment',
+        heroTag: 'group-fab',
+        onPressed: () async {
+          Group newGroup = await Navigator.push(
+            context,
+            new MaterialPageRoute<Group>(
+                builder: (BuildContext context) => new AddGroupDialog(),
+                fullscreenDialog: true),
+          );
+          if (newGroup != null) {
+            setState((){
+              _groups.add(newGroup);
+            });
+          }
+        },
+        tooltip: 'Add a new group',
         child: new Icon(Icons.add),
       ),
     );

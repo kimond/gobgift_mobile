@@ -73,11 +73,6 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: null,
-        tooltip: 'Increment',
-        child: new Icon(Icons.add),
-      ),
     );
   }
 }

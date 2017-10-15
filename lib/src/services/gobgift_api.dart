@@ -29,6 +29,22 @@ class GobgiftApi {
     return groups;
   }
 
+  Future<Group> addGroup(Group group) async {
+    Group newGroup;
+    final oauthClient = _authService.oauthClient;
+    var response = await oauthClient
+        .post("$baseUrl/listgroups/", body: group.toJson())
+        .whenComplete(oauthClient.close);
+
+    if (response.statusCode == 201) {
+      var json = JSON.decode(response.body);
+      newGroup = new Group.fromJson(json);
+    } else {
+      throw response.body;
+    }
+    return newGroup;
+  }
+
   Future<List<WishList>> getWishLists() async {
     List<WishList> wishLists = [];
     final oauthClient = _authService.oauthClient;
