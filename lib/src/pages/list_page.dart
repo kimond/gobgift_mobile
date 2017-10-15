@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gobgift_mobile/src/models/wish_list.dart';
 import 'package:gobgift_mobile/src/services/auth_service.dart';
 import 'package:gobgift_mobile/src/services/gobgift_api.dart';
+import 'package:gobgift_mobile/src/widgets/add_list_dialog.dart';
 
 class ListPage extends StatefulWidget {
   ListPage({Key key}) : super(key: key);
@@ -69,8 +70,20 @@ class _ListPageState extends State<ListPage> {
         onRefresh: _handleRefresh,
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: null,
-        tooltip: 'Increment',
+        onPressed: () async {
+          WishList newWishList = await Navigator.push(
+            context,
+            new MaterialPageRoute<WishList>(
+                builder: (BuildContext context) => new AddListDialog(),
+                fullscreenDialog: true),
+          );
+          if (newWishList != null) {
+            setState((){
+              _wishLists.add(newWishList);
+            });
+          }
+        },
+        tooltip: 'Add new list',
         child: new Icon(Icons.add),
       ),
     );

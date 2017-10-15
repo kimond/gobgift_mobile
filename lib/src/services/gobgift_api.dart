@@ -62,4 +62,20 @@ class GobgiftApi {
     }
     return wishLists;
   }
+
+  Future<WishList> addWishList(WishList wishList) async {
+    WishList newWishList;
+    final oauthClient = _authService.oauthClient;
+    var response = await oauthClient
+        .post("$baseUrl/lists/", body: wishList.toJson())
+        .whenComplete(oauthClient.close);
+
+    if (response.statusCode == 201) {
+      var json = JSON.decode(response.body);
+      newWishList = new WishList.fromJson(json);
+    } else {
+      throw response.body;
+    }
+    return newWishList;
+  }
 }

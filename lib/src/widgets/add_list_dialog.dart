@@ -1,43 +1,43 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:gobgift_mobile/src/models/group.dart';
+import 'package:gobgift_mobile/src/models/wish_list.dart';
 import 'package:gobgift_mobile/src/services/auth_service.dart';
 import 'package:gobgift_mobile/src/services/gobgift_api.dart';
 
-class AddGroupDialog extends StatefulWidget {
+class AddListDialog extends StatefulWidget {
   @override
-  _AddGroupDialogState createState() => new _AddGroupDialogState();
+  _AddListDialogState createState() => new _AddListDialogState();
 }
 
-class _AddGroupDialogState extends State<AddGroupDialog> {
+class _AddListDialogState extends State<AddListDialog> {
   final TextEditingController _nameController = new TextEditingController();
   final _authService = new AuthService();
   GobgiftApi api;
 
 
-  Future<Group> createGroup() async {
+  Future<WishList> createWishList() async {
     await _authService.init();
     api = new GobgiftApi(_authService);
-    Group newGroup = new Group(_nameController.text);
+    WishList newWishList = new WishList(_nameController.text);
     try {
-      newGroup = await api.addGroup(newGroup);
+      newWishList = await api.addWishList(newWishList);
     } on Exception catch (e) {
       print(e);
     }
 
-    return newGroup;
+    return newWishList;
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: const Text('New Group'),
+        title: const Text('New List'),
         actions: <Widget>[
           new FlatButton(child: new Text('SAVE'), onPressed: () async {
-            Group group = await createGroup();
-            Navigator.of(context).pop(group);
+            WishList wishList = await createWishList();
+            Navigator.of(context).pop(wishList);
           }),
         ],
       ),
@@ -49,7 +49,7 @@ class _AddGroupDialogState extends State<AddGroupDialog> {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: new TextField(
               controller: _nameController,
-              decoration: new InputDecoration(hintText: 'Group name'),
+              decoration: new InputDecoration(hintText: 'List name'),
             ),
           )
         ],
