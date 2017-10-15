@@ -21,6 +21,11 @@ class _LoginPageState extends State<GroupPage> {
   GobgiftApi api;
   List<Group> _groups = [];
 
+  void initState() {
+    super.initState();
+    fetchGroups();
+  }
+
   Future fetchGroups() async {
     await _authService.init();
     api = new GobgiftApi(_authService);
@@ -35,7 +40,7 @@ class _LoginPageState extends State<GroupPage> {
     secondary = const Text("Owner:");
     return new MergeSemantics(
       child: new ListTile(
-        leading: new ExcludeSemantics(child: new CircleAvatar(child: new Text(group.name))),
+        leading: new ExcludeSemantics(child: new CircleAvatar(child: new Text(group.name[0]))),
         title: new Text('${group.name}'),
         subtitle: secondary,
       ),
@@ -44,7 +49,6 @@ class _LoginPageState extends State<GroupPage> {
 
   @override
   Widget build(BuildContext context) {
-    fetchGroups();
     Iterable<Widget> listTiles =
         _groups.map((Group group) => buildListTile(context, group));
     return new Scaffold(
