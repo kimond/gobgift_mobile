@@ -41,12 +41,15 @@ class _ListPageState extends State<ListPage> {
   Widget buildListTile(BuildContext context, WishList wishList) {
     Widget secondary;
     secondary = const Text("Groups:");
-    return new MergeSemantics(
-      child: new ListTile(
-        leading: new ExcludeSemantics(
-            child: new CircleAvatar(child: new Text(wishList.name[0]))),
-        title: new Text('${wishList.name}'),
-        subtitle: secondary,
+    return new InkWell(
+      onTap: () {},
+      child: new MergeSemantics(
+        child: new ListTile(
+          leading: new ExcludeSemantics(
+              child: new CircleAvatar(child: new Text(wishList.name[0]))),
+          title: new Text('${wishList.name}'),
+          subtitle: secondary,
+        ),
       ),
     );
   }
@@ -78,7 +81,7 @@ class _ListPageState extends State<ListPage> {
                 fullscreenDialog: true),
           );
           if (newWishList != null) {
-            setState((){
+            setState(() {
               _wishLists.add(newWishList);
             });
           }

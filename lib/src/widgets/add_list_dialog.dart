@@ -19,7 +19,7 @@ class _AddListDialogState extends State<AddListDialog> {
   Future<WishList> createWishList() async {
     await _authService.init();
     api = new GobgiftApi(_authService);
-    WishList newWishList = new WishList(_nameController.text);
+    WishList newWishList = new WishList(null, _nameController.text);
     try {
       newWishList = await api.addWishList(newWishList);
     } on Exception catch (e) {

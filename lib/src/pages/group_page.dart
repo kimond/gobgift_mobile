@@ -41,12 +41,15 @@ class _GroupPageState extends State<GroupPage> {
   Widget buildListTile(BuildContext context, Group group) {
     Widget secondary;
     secondary = const Text("Owner:");
-    return new MergeSemantics(
-      child: new ListTile(
-        leading: new ExcludeSemantics(
-            child: new CircleAvatar(child: new Text(group.name[0]))),
-        title: new Text('${group.name}'),
-        subtitle: secondary,
+    return new InkWell(
+      onTap: () {},
+      child: new MergeSemantics(
+        child: new ListTile(
+          leading: new ExcludeSemantics(
+              child: new CircleAvatar(child: new Text(group.name[0]))),
+          title: new Text('${group.name}'),
+          subtitle: secondary,
+        ),
       ),
     );
   }
@@ -79,7 +82,7 @@ class _GroupPageState extends State<GroupPage> {
                 fullscreenDialog: true),
           );
           if (newGroup != null) {
-            setState((){
+            setState(() {
               _groups.add(newGroup);
             });
           }

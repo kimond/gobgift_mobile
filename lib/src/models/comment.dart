@@ -11,5 +11,6 @@ class Comment extends Object with _$CommentSerializerMixin {
 
   Comment(this.text, this.datetime);
 
-  factory Comment.fromJson(Map<String, dynamic> json) => _$CommentFromJson(json);
+  factory Comment.fromJson(Map<String, dynamic> json) =>
+      _$CommentFromJson(json);
 }

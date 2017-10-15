@@ -19,7 +19,7 @@ class _AddGroupDialogState extends State<AddGroupDialog> {
   Future<Group> createGroup() async {
     await _authService.init();
     api = new GobgiftApi(_authService);
-    Group newGroup = new Group(_nameController.text);
+    Group newGroup = new Group(null, _nameController.text);
     try {
       newGroup = await api.addGroup(newGroup);
     } on Exception catch (e) {
