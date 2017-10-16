@@ -1,24 +1,32 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:gobgift_mobile/app_state.dart';
 import 'package:gobgift_mobile/src/pages/group_page.dart';
 import 'package:gobgift_mobile/src/pages/list_page.dart';
 import 'package:gobgift_mobile/src/services/auth_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:meta/meta.dart';
+import 'package:redux/redux.dart';
 
 GoogleSignIn googleSignIn = new GoogleSignIn();
 AuthService authService = new AuthService();
 
 class Homepage extends StatefulWidget {
-  Homepage({Key key}) : super(key: key);
+  final Store<AppState> store;
+
+  Homepage({Key key, @required this.store}) : super(key: key);
 
   @override
-  _HomePageState createState() => new _HomePageState();
+  _HomePageState createState() => new _HomePageState(store: store);
 }
 
 class _HomePageState extends State<Homepage> with TickerProviderStateMixin {
+  final Store<AppState> store;
   int _currentIndex = 0;
   List<NavigationIconView> _navigationViews;
+
+  _HomePageState({@required this.store});
 
   @override
   void initState() {
@@ -26,7 +34,7 @@ class _HomePageState extends State<Homepage> with TickerProviderStateMixin {
     _navigationViews = <NavigationIconView>[
       new NavigationIconView(
         icon: const Icon(Icons.group),
-        body: new GroupPage(),
+        body: new GroupPage(store: store),
         title: const Text('My groups'),
         color: new Color.fromARGB(0xFF, 0xF4, 0x43, 0x36),
         vsync: this,

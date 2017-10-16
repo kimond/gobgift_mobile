@@ -7,9 +7,22 @@ part of models.group;
 // **************************************************************************
 
 Group _$GroupFromJson(Map<String, dynamic> json) =>
-    new Group(json['name'] as String);
+    new Group(json['id'] as int, json['name'] as String);
 
 abstract class _$GroupSerializerMixin {
+  int get id;
   String get name;
-  Map<String, dynamic> toJson() => <String, dynamic>{'name': name};
+  Map<String, dynamic> toJson() {
+    var val = <String, dynamic>{};
+
+    void writeNotNull(String key, dynamic value) {
+      if (value != null) {
+        val[key] = value;
+      }
+    }
+
+    writeNotNull('id', id);
+    val['name'] = name;
+    return val;
+  }
 }

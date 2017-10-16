@@ -1,32 +1,42 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:gobgift_mobile/app_state.dart';
 import 'package:gobgift_mobile/src/models/group.dart';
 import 'package:gobgift_mobile/src/services/auth_service.dart';
 import 'package:gobgift_mobile/src/services/gobgift_api.dart';
 import 'package:gobgift_mobile/src/widgets/add_group_dialog.dart';
+import 'package:gobgift_mobile/src/widgets/group_tile.dart';
+import 'package:meta/meta.dart';
+import 'package:redux/redux.dart';
 
 class GroupPage extends StatefulWidget {
-  GroupPage({Key key}) : super(key: key);
+  final Store<AppState> store;
+  GroupPage({Key key, @required this.store}) : super(key: key);
 
   @override
-  _GroupPageState createState() => new _GroupPageState();
+  _GroupPageState createState() => new _GroupPageState(store: store);
 }
 
 class _GroupPageState extends State<GroupPage> {
+  final Store<AppState> store;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   final _authService = new AuthService();
   GobgiftApi api;
   List<Group> _groups = [];
 
+  _GroupPageState({ @required this.store});
+
   void initState() {
     super.initState();
+    store.dispatch(new FetchGroupsAction());
     fetchGroups();
   }
 
   Future<Null> _handleRefresh() async {
     await fetchGroups();
+    store.dispatch(new FetchGroupsAction());
   }
 
   Future fetchGroups() async {
@@ -38,26 +48,10 @@ class _GroupPageState extends State<GroupPage> {
     });
   }
 
-  Widget buildListTile(BuildContext context, Group group) {
-    Widget secondary;
-    secondary = const Text("Owner:");
-    return new InkWell(
-      onTap: () {},
-      child: new MergeSemantics(
-        child: new ListTile(
-          leading: new ExcludeSemantics(
-              child: new CircleAvatar(child: new Text(group.name[0]))),
-          title: new Text('${group.name}'),
-          subtitle: secondary,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     Iterable<Widget> listTiles =
-        _groups.map((Group group) => buildListTile(context, group));
+        _groups.map((Group group) => new GroupTile(group));
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('Gobgift'),
