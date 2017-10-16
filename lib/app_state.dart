@@ -25,42 +25,42 @@ class FetchGroupsAction extends IsAsyncAction {
   final _authService = new AuthService();
 
   @override
-  Future<AppState> handle(AppState state) async {
+  Future<Null> handle(Store<AppState> store) async {
     await _authService.init();
     final api = new GobgiftApi(_authService);
     List<Group> groups = await api.getGroups();
+    store.dispatch(new SetGroupsAction(groups));
+  }
+}
+
+class SetGroupsAction extends IsAction {
+  final List<Group> groups;
+
+  SetGroupsAction(this.groups);
+
+  @override
+  AppState handle(AppState state) {
     state.groups = groups;
     return state;
   }
 }
 
 abstract class IsAction {
-  AppState result;
-  void handle(AppState state);
-}
-
-class FutureCompleteAction extends IsAction {
-  AppState result;
-
-  FutureCompleteAction(this.result);
-  void handle(AppState state){}
+  AppState handle(AppState state);
 }
 
 abstract class IsAsyncAction {
-  Future<AppState> handle(AppState state);
+  Future<Null> handle(Store<AppState> store);
 }
 
 void futureMiddleware<State>(Store<State> store, action, NextDispatcher next) {
   if (action is IsAsyncAction) {
-    action.handle(store.state as AppState).then((appState) {
-      store.dispatch(new FutureCompleteAction(appState));
-    });
+    action.handle(store as Store<AppState>);
   } else {
     next(action);
   }
 }
 
 AppState reducer<T extends IsAction>(AppState state, T action) {
-  return action.result;
+  return action.handle(state.clone());
 }
-
