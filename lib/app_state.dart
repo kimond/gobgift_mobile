@@ -12,7 +12,7 @@ class AppState {
 
   AppState.initial()
       : groups = [],
-        wishLists = [] {}
+        wishLists = [];
 
   AppState._(this.groups, this.wishLists);
 
@@ -33,14 +33,62 @@ class FetchGroupsAction extends IsAsyncAction {
   }
 }
 
-class SetGroupsAction extends IsAction {
-  final List<Group> groups;
+class AddGroupAction extends IsAction {
+  final Group _group;
 
-  SetGroupsAction(this.groups);
+  AddGroupAction(this._group);
 
   @override
   AppState handle(AppState state) {
-    state.groups = groups;
+    state.groups.add(_group);
+    return state;
+  }
+}
+
+class SetGroupsAction extends IsAction {
+  final List<Group> _groups;
+
+  SetGroupsAction(this._groups);
+
+  @override
+  AppState handle(AppState state) {
+    state.groups = _groups;
+    return state;
+  }
+}
+
+class FetchListsAction extends IsAsyncAction {
+  final _authService = new AuthService();
+
+  @override
+  Future<Null> handle(Store<AppState> store) async {
+    await _authService.init();
+    final api = new GobgiftApi(_authService);
+    List<WishList> wishLists = await api.getWishLists();
+    store.dispatch(new SetListsAction(wishLists));
+  }
+}
+
+class SetListsAction extends IsAction{
+  final List<WishList> _wishLists;
+
+  SetListsAction(this._wishLists);
+
+  @override
+  AppState handle(AppState state) {
+    state.wishLists = _wishLists;
+    return state;
+  }
+}
+
+class AddListAction extends IsAction {
+  final WishList _wishList;
+
+  AddListAction(this._wishList);
+
+  @override
+  AppState handle(AppState state) {
+    state.wishLists.add(_wishList);
     return state;
   }
 }

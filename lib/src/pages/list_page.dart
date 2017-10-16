@@ -1,90 +1,67 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:gobgift_mobile/app_state.dart';
 import 'package:gobgift_mobile/src/models/wish_list.dart';
-import 'package:gobgift_mobile/src/services/auth_service.dart';
-import 'package:gobgift_mobile/src/services/gobgift_api.dart';
 import 'package:gobgift_mobile/src/widgets/add_list_dialog.dart';
+import 'package:gobgift_mobile/src/widgets/wish_list_tile.dart';
+import 'package:redux/redux.dart';
 
 class ListPage extends StatefulWidget {
-  ListPage({Key key}) : super(key: key);
+  final Store<AppState> store;
+
+  ListPage({Key key, this.store}) : super(key: key);
 
   @override
-  _ListPageState createState() => new _ListPageState();
+  _ListPageState createState() => new _ListPageState(store: store);
 }
 
 class _ListPageState extends State<ListPage> {
+  final Store<AppState> store;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
-  final _authService = new AuthService();
-  GobgiftApi api;
-  List<WishList> _wishLists = [];
+
+  _ListPageState({this.store});
 
   void initState() {
     super.initState();
-    fetchWishLists();
+    store.dispatch(new FetchListsAction());
   }
 
   Future<Null> _handleRefresh() async {
-    await fetchWishLists();
-  }
-
-  Future fetchWishLists() async {
-    await _authService.init();
-    api = new GobgiftApi(_authService);
-    List<WishList> wishLists = await api.getWishLists();
-    setState(() {
-      _wishLists = wishLists;
-    });
-  }
-
-  Widget buildListTile(BuildContext context, WishList wishList) {
-    Widget secondary;
-    secondary = const Text("Groups:");
-    return new InkWell(
-      onTap: () {},
-      child: new MergeSemantics(
-        child: new ListTile(
-          leading: new ExcludeSemantics(
-              child: new CircleAvatar(child: new Text(wishList.name[0]))),
-          title: new Text('${wishList.name}'),
-          subtitle: secondary,
-        ),
-      ),
-    );
+    store.dispatch(new FetchListsAction());
   }
 
   @override
   Widget build(BuildContext context) {
-    Iterable<Widget> listTiles =
-        _wishLists.map((WishList group) => buildListTile(context, group));
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('Gobgift'),
       ),
       body: new RefreshIndicator(
         key: _refreshIndicatorKey,
+        onRefresh: _handleRefresh,
         child: new Scrollbar(
-          child: new ListView(
-            padding: new EdgeInsets.symmetric(vertical: 8.0),
-            children: listTiles.toList(),
+          child: new StoreConnector<AppState, List<WishList>>(
+            converter: (store) => store.state.wishLists,
+            builder: (context, wishLists) => new ListView(
+                  padding: new EdgeInsets.symmetric(vertical: 8.0),
+                  children: wishLists
+                      .map((WishList wishList) => new WishListTile(wishList))
+                      .toList(),
+                ),
           ),
         ),
-        onRefresh: _handleRefresh,
       ),
       floatingActionButton: new FloatingActionButton(
         onPressed: () async {
-          WishList newWishList = await Navigator.push(
-            context,
-            new MaterialPageRoute<WishList>(
-                builder: (BuildContext context) => new AddListDialog(),
-                fullscreenDialog: true),
-          );
-          if (newWishList != null) {
-            setState(() {
-              _wishLists.add(newWishList);
-            });
-          }
+          await Navigator.of(context).push(
+                new MaterialPageRoute<Null>(
+                    builder: (BuildContext context) =>
+                        new AddListDialog(store: store),
+                    fullscreenDialog: true),
+              );
         },
         tooltip: 'Add new list',
         child: new Icon(Icons.add),

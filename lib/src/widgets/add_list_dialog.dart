@@ -1,32 +1,39 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:gobgift_mobile/app_state.dart';
 import 'package:gobgift_mobile/src/models/wish_list.dart';
 import 'package:gobgift_mobile/src/services/auth_service.dart';
 import 'package:gobgift_mobile/src/services/gobgift_api.dart';
+import 'package:redux/redux.dart';
 
 class AddListDialog extends StatefulWidget {
+  final Store<AppState> store;
+
+  AddListDialog({this.store});
+
   @override
-  _AddListDialogState createState() => new _AddListDialogState();
+  _AddListDialogState createState() => new _AddListDialogState(store: store);
 }
 
 class _AddListDialogState extends State<AddListDialog> {
+  final Store<AppState> store;
   final TextEditingController _nameController = new TextEditingController();
   final _authService = new AuthService();
   GobgiftApi api;
 
+  _AddListDialogState({this.store});
 
-  Future<WishList> createWishList() async {
+  Future<Null> createWishList() async {
     await _authService.init();
     api = new GobgiftApi(_authService);
     WishList newWishList = new WishList(null, _nameController.text);
     try {
       newWishList = await api.addWishList(newWishList);
+      store.dispatch(new AddListAction(newWishList));
     } on Exception catch (e) {
       print(e);
     }
-
-    return newWishList;
   }
 
   @override
@@ -35,10 +42,12 @@ class _AddListDialogState extends State<AddListDialog> {
       appBar: new AppBar(
         title: const Text('New List'),
         actions: <Widget>[
-          new FlatButton(child: new Text('SAVE'), onPressed: () async {
-            WishList wishList = await createWishList();
-            Navigator.of(context).pop(wishList);
-          }),
+          new FlatButton(
+              child: new Text('SAVE'),
+              onPressed: () async {
+                WishList wishList = await createWishList();
+                Navigator.of(context).pop(wishList);
+              }),
         ],
       ),
       body: new Form(
