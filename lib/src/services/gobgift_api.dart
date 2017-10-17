@@ -20,7 +20,7 @@ class GobgiftApi {
 
     if (response.statusCode == 200) {
       var json = JSON.decode(response.body);
-      groups = json.map((groupJson){
+      groups = json.map((groupJson) {
         return new Group.fromJson(groupJson);
       }).toList();
     } else {
@@ -45,6 +45,21 @@ class GobgiftApi {
     return newGroup;
   }
 
+  Future<bool> deleteGroup(Group group) async {
+    bool _success;
+    final oauthClient = _authService.oauthClient;
+    var response = await oauthClient
+        .delete("$baseUrl/listgroups/${group.id}/")
+        .whenComplete(oauthClient.close);
+
+    if (response.statusCode == 204) {
+      _success = true;
+    } else {
+      throw response.body;
+    }
+    return _success;
+  }
+
   Future<List<WishList>> getWishLists() async {
     List<WishList> wishLists = [];
     final oauthClient = _authService.oauthClient;
@@ -54,7 +69,7 @@ class GobgiftApi {
 
     if (response.statusCode == 200) {
       var json = JSON.decode(response.body);
-      wishLists = json.map((groupJson){
+      wishLists = json.map((groupJson) {
         return new WishList.fromJson(groupJson);
       }).toList();
     } else {
@@ -77,5 +92,20 @@ class GobgiftApi {
       throw response.body;
     }
     return newWishList;
+  }
+
+  Future<bool> deleteList(WishList wishList) async {
+    bool _success;
+    final oauthClient = _authService.oauthClient;
+    var response = await oauthClient
+        .delete("$baseUrl/lists/${wishList.id}/")
+        .whenComplete(oauthClient.close);
+
+    if (response.statusCode == 204) {
+      _success = true;
+    } else {
+      throw response.body;
+    }
+    return _success;
   }
 }

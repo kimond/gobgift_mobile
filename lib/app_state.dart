@@ -45,6 +45,25 @@ class AddGroupAction extends IsAction {
   }
 }
 
+class DeleteGroupAction extends IsAsyncAction {
+  final _authService = new AuthService();
+  final Group _group;
+
+  DeleteGroupAction(this._group);
+
+  @override
+  Future<Null> handle(Store<AppState> store) async {
+    await _authService.init();
+    final api = new GobgiftApi(_authService);
+    bool _success = await api.deleteGroup(_group);
+    if (_success) {
+      List<Group> groups = store.state.groups;
+      groups.remove(_group);
+      store.dispatch(new SetGroupsAction(groups));
+    }
+  }
+}
+
 class SetGroupsAction extends IsAction {
   final List<Group> _groups;
 
@@ -69,7 +88,26 @@ class FetchListsAction extends IsAsyncAction {
   }
 }
 
-class SetListsAction extends IsAction{
+class DeleteListAction extends IsAsyncAction {
+  final _authService = new AuthService();
+  final WishList _wishList;
+
+  DeleteListAction(this._wishList);
+
+  @override
+  Future<Null> handle(Store<AppState> store) async {
+    await _authService.init();
+    final api = new GobgiftApi(_authService);
+    bool _success = await api.deleteList(_wishList);
+    if (_success) {
+      List<WishList> wishLists = store.state.wishLists;
+      wishLists.remove(_wishList);
+      store.dispatch(new SetListsAction(wishLists));
+    }
+  }
+}
+
+class SetListsAction extends IsAction {
   final List<WishList> _wishLists;
 
   SetListsAction(this._wishLists);

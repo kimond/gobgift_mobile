@@ -49,7 +49,8 @@ class _GroupPageState extends State<GroupPage> {
             builder: (context, groups) => new ListView(
                   padding: new EdgeInsets.symmetric(vertical: 8.0),
                   children: groups
-                      .map((Group group) => new GroupTile(group))
+                      .map((Group group) =>
+                          new GroupTile(store: store, group: group))
                       .toList(),
                 ),
           ),

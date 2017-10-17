@@ -75,7 +75,7 @@ class AuthService {
 }
 
 class OauthClient extends _AuthClient {
-  OauthClient(Client client, String token) : super(client, 'token ${token}');
+  OauthClient(Client client, String token) : super(client, 'token $token');
 }
 
 abstract class _AuthClient extends BaseClient {

@@ -48,7 +48,8 @@ class _ListPageState extends State<ListPage> {
             builder: (context, wishLists) => new ListView(
                   padding: new EdgeInsets.symmetric(vertical: 8.0),
                   children: wishLists
-                      .map((WishList wishList) => new WishListTile(wishList))
+                      .map((WishList wishList) =>
+                          new WishListTile(store: store, wishList: wishList))
                       .toList(),
                 ),
           ),

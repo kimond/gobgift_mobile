@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:gobgift_mobile/app_state.dart';
 import 'package:gobgift_mobile/src/pages/group_page.dart';
