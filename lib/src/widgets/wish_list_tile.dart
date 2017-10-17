@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gobgift_mobile/app_state.dart';
 import 'package:gobgift_mobile/src/models/wish_list.dart';
+import 'package:gobgift_mobile/src/pages/list_detail_page.dart';
 import 'package:gobgift_mobile/src/utils.dart';
 import 'package:redux/redux.dart';
 
@@ -43,7 +44,11 @@ class WishListTile extends StatelessWidget {
     Widget secondary;
     secondary = const Text("Groups:");
     return new InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).push(new MaterialPageRoute(
+            builder: (BuildContext context) =>
+                new ListDetailPage(store: store, wishList: wishList)));
+      },
       child: new MergeSemantics(
         child: new ListTile(
           leading: new ExcludeSemantics(

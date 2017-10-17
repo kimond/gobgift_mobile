@@ -1,23 +1,39 @@
 import 'dart:async';
 
+import 'package:gobgift_mobile/src/models/gift.dart';
 import 'package:gobgift_mobile/src/models/group.dart';
 import 'package:gobgift_mobile/src/models/wish_list.dart';
 import 'package:gobgift_mobile/src/services/auth_service.dart';
 import 'package:gobgift_mobile/src/services/gobgift_api.dart';
 import 'package:redux/redux.dart';
 
+
+class CurrentWishListState {
+  final WishList wishList;
+  final List<Gift> gifts;
+
+  CurrentWishListState({this.wishList, this.gifts});
+}
+
 class AppState {
   List<Group> groups;
   List<WishList> wishLists;
+  final CurrentWishListState selectedList;
 
   AppState.initial()
       : groups = [],
-        wishLists = [];
+        wishLists = [],
+        selectedList = null;
 
-  AppState._(this.groups, this.wishLists);
+  AppState._({this.groups, this.wishLists, this.selectedList});
 
-  AppState clone() {
-    return new AppState._(new List.from(groups), new List.from(wishLists));
+  AppState apply({List<Group> groups, List<
+      WishList> wishLists, CurrentWishListState selectedList}) {
+    return new AppState._(
+        groups: groups ?? this.groups,
+        wishLists: wishLists ?? this.wishLists,
+        selectedList: selectedList ?? this.selectedList
+    );
   }
 }
 
@@ -40,8 +56,9 @@ class AddGroupAction extends IsAction {
 
   @override
   AppState handle(AppState state) {
-    state.groups.add(_group);
-    return state;
+    List<Group> groups = state.groups;
+    groups.add(_group);
+    return state.apply(groups: groups);
   }
 }
 
@@ -71,8 +88,7 @@ class SetGroupsAction extends IsAction {
 
   @override
   AppState handle(AppState state) {
-    state.groups = _groups;
-    return state;
+    return state.apply(groups: _groups);
   }
 }
 
@@ -114,8 +130,7 @@ class SetListsAction extends IsAction {
 
   @override
   AppState handle(AppState state) {
-    state.wishLists = _wishLists;
-    return state;
+    return state.apply(wishLists: _wishLists);
   }
 }
 
@@ -126,8 +141,9 @@ class AddListAction extends IsAction {
 
   @override
   AppState handle(AppState state) {
-    state.wishLists.add(_wishList);
-    return state;
+    List<WishList> wishLists = state.wishLists;
+    wishLists.add(_wishList);
+    return state.apply(wishLists: wishLists);
   }
 }
 
@@ -148,5 +164,5 @@ void futureMiddleware<State>(Store<State> store, action, NextDispatcher next) {
 }
 
 AppState reducer<T extends IsAction>(AppState state, T action) {
-  return action.handle(state.clone());
+  return action.handle(state);
 }
