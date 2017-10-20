@@ -37,7 +37,7 @@ class _AddGiftDialogState extends State<AddGiftDialog> {
       store: _storeCtrl.text,
     );
     try {
-      newGift = new Gift.fromJson(await api.add(newGift));
+      newGift = await api.add(newGift);
       store.dispatch(new AddGiftAction(newGift));
     } on Exception catch (e) {
       print(e);

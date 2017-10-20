@@ -8,6 +8,7 @@ part 'group.g.dart';
 @JsonSerializable()
 class Group extends Object with RestResource, _$GroupSerializerMixin {
   final String name;
+  @JsonKey(name: 'id', includeIfNull: false)
   final int _id;
 
   Group(this._id, this.name);

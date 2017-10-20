@@ -8,6 +8,7 @@ part 'wish_list.g.dart';
 @JsonSerializable()
 class WishList extends Object with RestResource, _$WishListSerializerMixin {
   final String name;
+  @JsonKey(name: 'id', includeIfNull: false)
   final int _id;
 
   WishList(this._id, this.name);
