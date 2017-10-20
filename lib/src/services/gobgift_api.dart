@@ -28,7 +28,7 @@ abstract class GobgiftApi<M extends RestResource> {
 
     if (response.statusCode == 200) {
       List<Map<String, dynamic>> json = JSON.decode(response.body);
-      return json.map((Map<String, dynamic> m) => reviver(m)).toList();
+      return json.map(reviver).toList();
     } else {
       throw response.body;
     }
