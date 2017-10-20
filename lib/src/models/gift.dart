@@ -15,6 +15,7 @@ class Gift extends Object with RestResource, _$GiftSerializerMixin {
   final String website;
   final String store;
   final bool purchased;
+  @JsonKey(name: 'id', includeIfNull: false)
   final int _id;
 
   Gift(

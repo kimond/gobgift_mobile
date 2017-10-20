@@ -74,8 +74,7 @@ class FetchGroupsAction extends IsAsyncAction {
   Future<Null> handle(Store<AppState> store) async {
     await _authService.init();
     final api = new GroupsApi(_authService);
-    List<Map<String, dynamic>> json = await api.getList(Group);
-    List<Group> groups = json.map((j) => new Group.fromJson(j)).toList();
+    List<Group> groups = await api.getList();
     store.dispatch(new SetGroupsAction(groups));
   }
 }
@@ -130,9 +129,7 @@ class FetchListsAction extends IsAsyncAction {
   Future<Null> handle(Store<AppState> store) async {
     await _authService.init();
     final api = new ListsApi(_authService);
-    List<Map<String, dynamic>> json = await api.getList(WishList);
-    List<WishList> wishLists =
-        json.map((j) => new WishList.fromJson(j)).toList();
+    List<WishList> wishLists = await api.getList();
     store.dispatch(new SetListsAction(wishLists));
   }
 }
