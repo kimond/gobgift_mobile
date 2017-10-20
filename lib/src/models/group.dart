@@ -6,12 +6,14 @@ import 'package:json_annotation/json_annotation.dart';
 part 'group.g.dart';
 
 @JsonSerializable()
-class Group extends RestResource with _$GroupSerializerMixin {
-  @JsonKey(includeIfNull: false)
-  final int id;
+class Group extends Object with RestResource, _$GroupSerializerMixin {
   final String name;
+  final int _id;
 
-  Group(this.id, this.name);
+  Group(this._id, this.name);
 
   factory Group.fromJson(Map<String, dynamic> json) => _$GroupFromJson(json);
+
+  @override
+  int get id => _id;
 }

@@ -73,8 +73,8 @@ class FetchGroupsAction extends IsAsyncAction {
   @override
   Future<Null> handle(Store<AppState> store) async {
     await _authService.init();
-    final api = new GobgiftApi(_authService);
-    List<Map<String, dynamic>> json = await api.getList<Group>(Group);
+    final api = new GroupsApi(_authService);
+    List<Map<String, dynamic>> json = await api.getList(Group);
     List<Group> groups = json.map((j) => new Group.fromJson(j)).toList();
     store.dispatch(new SetGroupsAction(groups));
   }
@@ -102,8 +102,8 @@ class DeleteGroupAction extends IsAsyncAction {
   @override
   Future<Null> handle(Store<AppState> store) async {
     await _authService.init();
-    final api = new GobgiftApi(_authService);
-    bool _success = await api.delete<Group>(_group);
+    final api = new GroupsApi(_authService);
+    bool _success = await api.delete(_group);
     if (_success) {
       List<Group> groups = store.state.groups;
       groups.remove(_group);
@@ -129,8 +129,8 @@ class FetchListsAction extends IsAsyncAction {
   @override
   Future<Null> handle(Store<AppState> store) async {
     await _authService.init();
-    final api = new GobgiftApi(_authService);
-    List<Map<String, dynamic>> json = await api.getList<WishList>(WishList);
+    final api = new ListsApi(_authService);
+    List<Map<String, dynamic>> json = await api.getList(WishList);
     List<WishList> wishLists =
         json.map((j) => new WishList.fromJson(j)).toList();
     store.dispatch(new SetListsAction(wishLists));
@@ -146,8 +146,8 @@ class DeleteListAction extends IsAsyncAction {
   @override
   Future<Null> handle(Store<AppState> store) async {
     await _authService.init();
-    final api = new GobgiftApi(_authService);
-    bool _success = await api.delete<WishList>(_wishList);
+    final api = new ListsApi(_authService);
+    bool _success = await api.delete(_wishList);
     if (_success) {
       List<WishList> wishLists = store.state.wishLists;
       wishLists.remove(_wishList);

@@ -6,13 +6,15 @@ import 'package:json_annotation/json_annotation.dart';
 part 'wish_list.g.dart';
 
 @JsonSerializable()
-class WishList extends RestResource with _$WishListSerializerMixin {
-  @JsonKey(includeIfNull: false)
-  final int id;
+class WishList extends Object with RestResource, _$WishListSerializerMixin {
   final String name;
+  final int _id;
 
-  WishList(this.id, this.name);
+  WishList(this._id, this.name);
 
   factory WishList.fromJson(Map<String, dynamic> json) =>
       _$WishListFromJson(json);
+
+  @override
+  int get id => _id;
 }

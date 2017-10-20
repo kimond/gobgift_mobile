@@ -1,16 +1,24 @@
-import 'package:gobgift_mobile/src/models/gift.dart';
-import 'package:gobgift_mobile/src/models/group.dart';
-import 'package:gobgift_mobile/src/models/wish_list.dart';
+import 'package:gobgift_mobile/services.dart';
 import 'package:test/test.dart';
 import 'package:gobgift_mobile/src/services/gobgift_api.dart';
+import 'package:mockito/mockito.dart';
 
+class AuthServiceMock extends Mock implements AuthService {}
 
 main() {
   group('resourcePaths', () {
-    test('should use resource type as map key', (){
-      expect(resourcesPaths[Gift], 'gifts');
-      expect(resourcesPaths[WishList], 'lists');
-      expect(resourcesPaths[Group], 'listgroups');
+    final authApi = new AuthServiceMock();
+
+    test('Lists API has correct path', () {
+      expect(new ListsApi(authApi).resourcePath, 'lists');
+    });
+
+    test('Gifts API has correct path', () {
+      expect(new GiftApi(authApi).resourcePath, 'gifts');
+    });
+
+    test('Groups API has correct path', () {
+      expect(new GroupsApi(authApi).resourcePath, 'listgroups');
     });
   });
 }

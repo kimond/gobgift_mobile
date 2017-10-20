@@ -7,26 +7,22 @@ import 'package:gobgift_mobile/src/models/wish_list.dart';
 import 'package:gobgift_mobile/src/services/auth_service.dart';
 
 abstract class RestResource {
-  final int id = null;
+  int get id;
 }
 
-Map<Type, String> resourcesPaths = {
-  Gift: 'gifts',
-  WishList: 'lists',
-  Group: 'listgroups'
-};
-
-class GobgiftApi {
+abstract class GobgiftApi<M extends RestResource> {
   final String baseUrl = 'https://gobgift.kimond.com/api';
   final AuthService _authService;
 
+  String get resourcePath;
+
   GobgiftApi(this._authService);
 
-  Future<List<Map<String, dynamic>>> getList<R extends RestResource>(Type resourceType) async {
+  Future<List<Map<String, dynamic>>> getList(Type resourceType) async {
     List<Map<String, dynamic>> json;
     final oauthClient = _authService.oauthClient;
     var response = await oauthClient
-        .get("$baseUrl/${resourcesPaths[resourceType]}/")
+        .get("$baseUrl/$resourcePath/")
         .whenComplete(oauthClient.close);
 
     if (response.statusCode == 200) {
@@ -37,11 +33,11 @@ class GobgiftApi {
     return json;
   }
 
-  Future<Map<String, dynamic>> add<R extends RestResource>(R resource) async {
+  Future<Map<String, dynamic>> add(M model) async {
     Map<String, dynamic> json;
     final oauthClient = _authService.oauthClient;
     var response = await oauthClient
-        .post("$baseUrl/${resourcesPaths[resource.runtimeType]}/", body: JSON.encode(resource))
+        .post("$baseUrl/$resourcePath/", body: JSON.encode(model))
         .whenComplete(oauthClient.close);
 
     if (response.statusCode == 201) {
@@ -52,11 +48,11 @@ class GobgiftApi {
     return json;
   }
 
-  Future<bool> delete<R extends RestResource>(R resource) async {
+  Future<bool> delete(M model) async {
     bool _success;
     final oauthClient = _authService.oauthClient;
     var response = await oauthClient
-        .delete("$baseUrl/${resourcesPaths[resource.runtimeType]}/${resource.id}/")
+        .delete("$baseUrl/$resourcePath/${model.id}/")
         .whenComplete(oauthClient.close);
 
     if (response.statusCode == 204) {
@@ -66,4 +62,25 @@ class GobgiftApi {
     }
     return _success;
   }
+}
+
+class GiftApi extends GobgiftApi<Gift> {
+  GiftApi(AuthService authService) : super(authService);
+
+  @override
+  String get resourcePath => 'gifts';
+}
+
+class ListsApi extends GobgiftApi<WishList> {
+  ListsApi(AuthService authService) : super(authService);
+
+  @override
+  String get resourcePath => 'lists';
+}
+
+class GroupsApi extends GobgiftApi<Group> {
+  GroupsApi(AuthService authService) : super(authService);
+
+  @override
+  String get resourcePath => 'listgroups';
 }
