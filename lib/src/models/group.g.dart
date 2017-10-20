@@ -10,10 +10,12 @@ Group _$GroupFromJson(Map<String, dynamic> json) =>
     new Group(json['id'] as int, json['name'] as String);
 
 abstract class _$GroupSerializerMixin {
-  int get id;
   String get name;
+  int get _id;
   Map<String, dynamic> toJson() {
-    var val = <String, dynamic>{};
+    var val = <String, dynamic>{
+      'name': name,
+    };
 
     void writeNotNull(String key, dynamic value) {
       if (value != null) {
@@ -21,8 +23,7 @@ abstract class _$GroupSerializerMixin {
       }
     }
 
-    writeNotNull('id', id);
-    val['name'] = name;
+    writeNotNull('id', _id);
     return val;
   }
 }

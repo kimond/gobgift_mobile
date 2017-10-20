@@ -16,7 +16,6 @@ Gift _$GiftFromJson(Map<String, dynamic> json) =>
         purchased: json['purchased'] as bool);
 
 abstract class _$GiftSerializerMixin {
-  int get id;
   int get wishList;
   String get name;
   String get photo;
@@ -25,8 +24,18 @@ abstract class _$GiftSerializerMixin {
   String get website;
   String get store;
   bool get purchased;
+  int get _id;
   Map<String, dynamic> toJson() {
-    var val = <String, dynamic>{};
+    var val = <String, dynamic>{
+      'wishList': wishList,
+      'name': name,
+      'photo': photo,
+      'description': description,
+      'price': price,
+      'website': website,
+      'store': store,
+      'purchased': purchased,
+    };
 
     void writeNotNull(String key, dynamic value) {
       if (value != null) {
@@ -34,15 +43,7 @@ abstract class _$GiftSerializerMixin {
       }
     }
 
-    writeNotNull('id', id);
-    val['wishList'] = wishList;
-    val['name'] = name;
-    val['photo'] = photo;
-    val['description'] = description;
-    val['price'] = price;
-    val['website'] = website;
-    val['store'] = store;
-    val['purchased'] = purchased;
+    writeNotNull('id', _id);
     return val;
   }
 }

@@ -28,7 +28,7 @@ class _AddGiftDialogState extends State<AddGiftDialog> {
 
   Future<Null> createGift() async {
     await _authService.init();
-    api = new GobgiftApi(_authService);
+    api = new GiftApi(_authService);
     Gift newGift = new Gift(
       null,
       store.state.selectedList.wishList.id,
@@ -37,7 +37,7 @@ class _AddGiftDialogState extends State<AddGiftDialog> {
       store: _storeCtrl.text,
     );
     try {
-      newGift = new Gift.fromJson(await api.add<Gift>(newGift));
+      newGift = await api.add(newGift);
       store.dispatch(new AddGiftAction(newGift));
     } on Exception catch (e) {
       print(e);

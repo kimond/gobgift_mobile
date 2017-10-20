@@ -6,9 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'gift.g.dart';
 
 @JsonSerializable()
-class Gift extends RestResource with _$GiftSerializerMixin {
-  @JsonKey(includeIfNull: false)
-  final int id;
+class Gift extends Object with RestResource, _$GiftSerializerMixin {
   final int wishList;
   final String name;
   final String photo;
@@ -17,14 +15,23 @@ class Gift extends RestResource with _$GiftSerializerMixin {
   final String website;
   final String store;
   final bool purchased;
+  @JsonKey(name: 'id', includeIfNull: false)
+  final int _id;
 
-  Gift(this.id, this.wishList, this.name,
-      {this.photo,
-      this.description,
-      this.price,
-      this.website,
-      this.store,
-      this.purchased});
+  Gift(
+    this._id,
+    this.wishList,
+    this.name, {
+    this.photo,
+    this.description,
+    this.price,
+    this.website,
+    this.store,
+    this.purchased,
+  });
 
   factory Gift.fromJson(Map<String, dynamic> json) => _$GiftFromJson(json);
+
+  @override
+  int get id => _id;
 }
