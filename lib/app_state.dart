@@ -7,12 +7,41 @@ import 'package:gobgift_mobile/src/services/auth_service.dart';
 import 'package:gobgift_mobile/src/services/gobgift_api.dart';
 import 'package:redux/redux.dart';
 
-
 class CurrentWishListState {
   final WishList wishList;
   final List<Gift> gifts;
 
   CurrentWishListState({this.wishList, this.gifts});
+
+  CurrentWishListState apply({WishList wishList, List<Gift> gifts}) {
+    return new CurrentWishListState(
+        wishList: wishList ?? this.wishList, gifts: gifts ?? this.gifts);
+  }
+}
+
+class SetSelectedListAction extends IsAction {
+  final WishList wishList;
+
+  SetSelectedListAction(this.wishList);
+
+  @override
+  AppState handle(AppState state) {
+    CurrentWishListState selectedWishList =
+        new CurrentWishListState(wishList: wishList);
+    return state.apply(selectedList: selectedWishList);
+  }
+}
+
+class AddGiftAction extends IsAction {
+  final Gift gift;
+
+  AddGiftAction(this.gift);
+
+  AppState handle(AppState state) {
+    List<Gift> gifts = state.selectedList.gifts;
+    gifts.add(gift);
+    return state.apply(selectedList: state.selectedList.apply(gifts: gifts));
+  }
 }
 
 class AppState {
@@ -27,13 +56,14 @@ class AppState {
 
   AppState._({this.groups, this.wishLists, this.selectedList});
 
-  AppState apply({List<Group> groups, List<
-      WishList> wishLists, CurrentWishListState selectedList}) {
+  AppState apply(
+      {List<Group> groups,
+      List<WishList> wishLists,
+      CurrentWishListState selectedList}) {
     return new AppState._(
         groups: groups ?? this.groups,
         wishLists: wishLists ?? this.wishLists,
-        selectedList: selectedList ?? this.selectedList
-    );
+        selectedList: selectedList ?? this.selectedList);
   }
 }
 
@@ -44,7 +74,8 @@ class FetchGroupsAction extends IsAsyncAction {
   Future<Null> handle(Store<AppState> store) async {
     await _authService.init();
     final api = new GobgiftApi(_authService);
-    List<Group> groups = await api.getGroups();
+    List<Map<String, dynamic>> json = await api.getList<Group>(Group);
+    List<Group> groups = json.map((j) => new Group.fromJson(j)).toList();
     store.dispatch(new SetGroupsAction(groups));
   }
 }
@@ -72,7 +103,7 @@ class DeleteGroupAction extends IsAsyncAction {
   Future<Null> handle(Store<AppState> store) async {
     await _authService.init();
     final api = new GobgiftApi(_authService);
-    bool _success = await api.deleteGroup(_group);
+    bool _success = await api.delete<Group>(_group);
     if (_success) {
       List<Group> groups = store.state.groups;
       groups.remove(_group);
@@ -99,7 +130,9 @@ class FetchListsAction extends IsAsyncAction {
   Future<Null> handle(Store<AppState> store) async {
     await _authService.init();
     final api = new GobgiftApi(_authService);
-    List<WishList> wishLists = await api.getWishLists();
+    List<Map<String, dynamic>> json = await api.getList<WishList>(WishList);
+    List<WishList> wishLists =
+        json.map((j) => new WishList.fromJson(j)).toList();
     store.dispatch(new SetListsAction(wishLists));
   }
 }
@@ -114,7 +147,7 @@ class DeleteListAction extends IsAsyncAction {
   Future<Null> handle(Store<AppState> store) async {
     await _authService.init();
     final api = new GobgiftApi(_authService);
-    bool _success = await api.deleteList(_wishList);
+    bool _success = await api.delete<WishList>(_wishList);
     if (_success) {
       List<WishList> wishLists = store.state.wishLists;
       wishLists.remove(_wishList);

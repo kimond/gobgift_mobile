@@ -87,6 +87,7 @@ abstract class _AuthClient extends BaseClient {
   @override
   Future<StreamedResponse> send(BaseRequest request) {
     request.headers['Authorization'] = _authorization;
+    request.headers['Content-Type'] = 'application/json';
     return _client.send(request);
   }
 }

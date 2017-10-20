@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:gobgift_mobile/app_state.dart';
 import 'package:gobgift_mobile/src/models/wish_list.dart';
-import 'package:gobgift_mobile/src/widgets/add_list_dialog.dart';
-import 'package:gobgift_mobile/src/widgets/wish_list_tile.dart';
+import 'package:gobgift_mobile/src/widgets/add_gift_dialog.dart';
 import 'package:redux/redux.dart';
 
 class ListDetailPage extends StatefulWidget {
@@ -49,7 +48,7 @@ class _ListDetailPageState extends State<ListDetailPage> {
           await Navigator.of(context).push(
                 new MaterialPageRoute<Null>(
                     builder: (BuildContext context) =>
-                        new AddListDialog(store: store),
+                        new AddGiftDialog(store: store),
                     fullscreenDialog: true),
               );
         },

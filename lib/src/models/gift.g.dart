@@ -6,18 +6,18 @@ part of models.gift;
 // Generator: JsonSerializableGenerator
 // **************************************************************************
 
-Gift _$GiftFromJson(Map<String, dynamic> json) => new Gift(
-    json['id'] as int,
-    json['name'] as String,
-    json['photo'] as String,
-    json['description'] as String,
-    (json['price'] as num)?.toDouble(),
-    json['website'] as String,
-    json['store'] as String,
-    json['purchased'] as bool);
+Gift _$GiftFromJson(Map<String, dynamic> json) =>
+    new Gift(json['id'] as int, json['wishList'] as int, json['name'] as String,
+        photo: json['photo'] as String,
+        description: json['description'] as String,
+        price: (json['price'] as num)?.toDouble(),
+        website: json['website'] as String,
+        store: json['store'] as String,
+        purchased: json['purchased'] as bool);
 
 abstract class _$GiftSerializerMixin {
   int get id;
+  int get wishList;
   String get name;
   String get photo;
   String get description;
@@ -35,6 +35,7 @@ abstract class _$GiftSerializerMixin {
     }
 
     writeNotNull('id', id);
+    val['wishList'] = wishList;
     val['name'] = name;
     val['photo'] = photo;
     val['description'] = description;

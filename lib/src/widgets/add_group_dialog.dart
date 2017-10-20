@@ -29,7 +29,7 @@ class _AddGroupDialogState extends State<AddGroupDialog> {
     api = new GobgiftApi(_authService);
     Group newGroup = new Group(null, _nameController.text);
     try {
-      newGroup = await api.addGroup(newGroup);
+      newGroup = new Group.fromJson(await api.add<Group>(newGroup));
       store.dispatch(new AddGroupAction(newGroup));
     } on Exception catch (e) {
       print(e);

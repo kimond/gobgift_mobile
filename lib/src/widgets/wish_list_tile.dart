@@ -45,9 +45,12 @@ class WishListTile extends StatelessWidget {
     secondary = const Text("Groups:");
     return new InkWell(
       onTap: () {
-        Navigator.of(context).push(new MaterialPageRoute(
-            builder: (BuildContext context) =>
-                new ListDetailPage(store: store, wishList: wishList)));
+        Navigator.of(context).push(
+          new MaterialPageRoute(builder: (BuildContext context) {
+            store.dispatch(new SetSelectedListAction(wishList));
+            return new ListDetailPage(store: store, wishList: wishList);
+          }),
+        );
       },
       child: new MergeSemantics(
         child: new ListTile(

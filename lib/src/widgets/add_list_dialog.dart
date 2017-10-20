@@ -29,7 +29,7 @@ class _AddListDialogState extends State<AddListDialog> {
     api = new GobgiftApi(_authService);
     WishList newWishList = new WishList(null, _nameController.text);
     try {
-      newWishList = await api.addWishList(newWishList);
+      newWishList = new WishList.fromJson(await api.add<WishList>(newWishList));
       store.dispatch(new AddListAction(newWishList));
     } on Exception catch (e) {
       print(e);
