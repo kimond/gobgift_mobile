@@ -7,13 +7,20 @@ part 'gift.g.dart';
 
 @JsonSerializable()
 class Gift extends Object with RestResource, _$GiftSerializerMixin {
+  @JsonKey(name: 'wishlist')
   final int wishList;
   final String name;
+  @JsonKey(includeIfNull: false)
   final String photo;
+  @JsonKey(includeIfNull: false)
   final String description;
+  @JsonKey(includeIfNull: false)
   final double price;
+  @JsonKey(includeIfNull: false)
   final String website;
+  @JsonKey(includeIfNull: false)
   final String store;
+  @JsonKey(includeIfNull: false)
   final bool purchased;
   @JsonKey(name: 'id', includeIfNull: false)
   final int _id;

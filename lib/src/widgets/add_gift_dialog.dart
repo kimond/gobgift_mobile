@@ -46,6 +46,7 @@ class _AddGiftDialogState extends State<AddGiftDialog> {
 
   @override
   Widget build(BuildContext context) {
+    print(store.state.selectedList.gifts);
     return new Scaffold(
       appBar: new AppBar(
         title: const Text('New Gift'),

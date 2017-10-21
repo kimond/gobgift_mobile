@@ -27,8 +27,34 @@ class SetSelectedListAction extends IsAction {
   @override
   AppState handle(AppState state) {
     CurrentWishListState selectedWishList =
-        new CurrentWishListState(wishList: wishList);
+        new CurrentWishListState(wishList: wishList, gifts: []);
     return state.apply(selectedList: selectedWishList);
+  }
+}
+
+class SetSelectedListGiftsAction extends IsAction {
+  final List<Gift> gifts;
+
+  SetSelectedListGiftsAction(this.gifts);
+
+  @override
+  AppState handle(AppState state) {
+    return state.apply(selectedList: state.selectedList.apply(gifts: gifts));
+  }
+}
+
+class FetchGiftsForSelectedListAction extends IsAsyncAction {
+  final _authService = new AuthService();
+
+  FetchGiftsForSelectedListAction();
+
+  @override
+  Future<Null> handle(Store<AppState> store) async {
+    await _authService.init();
+    final listApi = new ListsApi(_authService);
+    List<Gift> gifts =
+        await listApi.getGifts(store.state.selectedList.wishList);
+    store.dispatch(new SetSelectedListGiftsAction(gifts));
   }
 }
 
@@ -39,6 +65,7 @@ class AddGiftAction extends IsAction {
 
   AppState handle(AppState state) {
     List<Gift> gifts = state.selectedList.gifts;
+    print(gifts);
     gifts.add(gift);
     return state.apply(selectedList: state.selectedList.apply(gifts: gifts));
   }

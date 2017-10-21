@@ -7,7 +7,7 @@ part of models.gift;
 // **************************************************************************
 
 Gift _$GiftFromJson(Map<String, dynamic> json) =>
-    new Gift(json['id'] as int, json['wishList'] as int, json['name'] as String,
+    new Gift(json['id'] as int, json['wishlist'] as int, json['name'] as String,
         photo: json['photo'] as String,
         description: json['description'] as String,
         price: (json['price'] as num)?.toDouble(),
@@ -27,14 +27,8 @@ abstract class _$GiftSerializerMixin {
   int get _id;
   Map<String, dynamic> toJson() {
     var val = <String, dynamic>{
-      'wishList': wishList,
+      'wishlist': wishList,
       'name': name,
-      'photo': photo,
-      'description': description,
-      'price': price,
-      'website': website,
-      'store': store,
-      'purchased': purchased,
     };
 
     void writeNotNull(String key, dynamic value) {
@@ -43,6 +37,12 @@ abstract class _$GiftSerializerMixin {
       }
     }
 
+    writeNotNull('photo', photo);
+    writeNotNull('description', description);
+    writeNotNull('price', price);
+    writeNotNull('website', website);
+    writeNotNull('store', store);
+    writeNotNull('purchased', purchased);
     writeNotNull('id', _id);
     return val;
   }

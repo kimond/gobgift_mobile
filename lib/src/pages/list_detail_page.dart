@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:gobgift_mobile/app_state.dart';
+import 'package:gobgift_mobile/src/models/gift.dart';
 import 'package:gobgift_mobile/src/models/wish_list.dart';
+import 'package:gobgift_mobile/src/widgets/GiftGrid.dart';
 import 'package:gobgift_mobile/src/widgets/add_gift_dialog.dart';
 import 'package:redux/redux.dart';
 
@@ -24,11 +26,18 @@ class _ListDetailPageState extends State<ListDetailPage> {
 
   _ListDetailPageState({this.store});
 
-  void initState() {
-    super.initState();
+  Future<Null> fetchGifts() async {
+    store.dispatch(new FetchGiftsForSelectedListAction());
   }
 
-  Future<Null> _handleRefresh() async {}
+  void initState() {
+    super.initState();
+    fetchGifts();
+  }
+
+  Future<Null> _handleRefresh() async {
+    fetchGifts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +48,14 @@ class _ListDetailPageState extends State<ListDetailPage> {
       body: new RefreshIndicator(
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,
-        child: new Scrollbar(
-          child: new Text('test'),
-        ),
+        child: new StoreConnector<AppState, List<Gift>>(
+            builder: (context, gifts) => gifts.isNotEmpty
+                ? new GiftGrid(gifts: gifts)
+                : new Text('No gift'),
+            converter: (store) => store.state.selectedList.gifts),
       ),
       floatingActionButton: new FloatingActionButton(
+        heroTag: 'addGift',
         onPressed: () async {
           await Navigator.of(context).push(
                 new MaterialPageRoute<Null>(
