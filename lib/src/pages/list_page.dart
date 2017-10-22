@@ -10,27 +10,38 @@ import 'package:redux/redux.dart';
 
 class ListPage extends StatefulWidget {
   final Store<AppState> store;
+  final bool fromGroup;
 
-  ListPage({Key key, this.store}) : super(key: key);
+  ListPage({Key key, this.store, this.fromGroup = false}) : super(key: key);
 
   @override
-  _ListPageState createState() => new _ListPageState(store: store);
+  _ListPageState createState() =>
+      new _ListPageState(store: store, fromGroup: fromGroup);
 }
 
 class _ListPageState extends State<ListPage> {
   final Store<AppState> store;
+  final bool fromGroup;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 
-  _ListPageState({this.store});
+  _ListPageState({this.store, this.fromGroup});
+
+  void fetchLists() {
+    if (fromGroup == true) {
+      store.dispatch(new FetchListsForSelectedGroupAction());
+    } else {
+      store.dispatch(new FetchListsAction());
+    }
+  }
 
   void initState() {
     super.initState();
-    store.dispatch(new FetchListsAction());
+    fetchLists();
   }
 
   Future<Null> _handleRefresh() async {
-    store.dispatch(new FetchListsAction());
+    fetchLists();
   }
 
   @override
@@ -44,7 +55,9 @@ class _ListPageState extends State<ListPage> {
         onRefresh: _handleRefresh,
         child: new Scrollbar(
           child: new StoreConnector<AppState, List<WishList>>(
-            converter: (store) => store.state.wishLists,
+            converter: (store) => fromGroup
+                ? store.state.selectedGroup.wishLists
+                : store.state.wishLists,
             builder: (context, wishLists) => new ListView(
                   padding: new EdgeInsets.symmetric(vertical: 8.0),
                   children: wishLists
@@ -55,18 +68,20 @@ class _ListPageState extends State<ListPage> {
           ),
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: () async {
-          await Navigator.of(context).push(
-                new MaterialPageRoute<Null>(
-                    builder: (BuildContext context) =>
-                        new AddListDialog(store: store),
-                    fullscreenDialog: true),
-              );
-        },
-        tooltip: 'Add new list',
-        child: new Icon(Icons.add),
-      ),
+      floatingActionButton: !fromGroup
+          ? new FloatingActionButton(
+              onPressed: () async {
+                await Navigator.of(context).push(
+                      new MaterialPageRoute<Null>(
+                          builder: (BuildContext context) =>
+                              new AddListDialog(store: store),
+                          fullscreenDialog: true),
+                    );
+              },
+              tooltip: 'Add new list',
+              child: new Icon(Icons.add),
+            )
+          : null,
     );
   }
 }

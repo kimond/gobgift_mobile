@@ -109,4 +109,18 @@ class GroupsApi extends GobgiftApi<Group> {
   @override
   Group Function(Map<String, dynamic>) get reviver =>
       (json) => new Group.fromJson(json);
+
+  Future<List<WishList>> getLists(Group group) async {
+    final oauthClient = _authService.oauthClient;
+    var response = await oauthClient
+        .get("$baseUrl/$resourcePath/${group.id}/lists")
+        .whenComplete(oauthClient.close);
+
+    if (response.statusCode == 200) {
+      List<Map<String, dynamic>> json = JSON.decode(response.body);
+      return json.map((json) => new WishList.fromJson(json)).toList();
+    } else {
+      throw response.body;
+    }
+  }
 }
