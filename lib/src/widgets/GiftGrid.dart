@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gobgift_mobile/src/models/gift.dart';
+import 'package:gobgift_mobile/src/pages/gift_page.dart';
 
 class _GridTitleText extends StatelessWidget {
   const _GridTitleText(this.text);
@@ -22,18 +23,15 @@ class GiftGridItem extends StatelessWidget {
   GiftGridItem({Key key, this.gift}) : super(key: key);
 
   void openGiftPage(BuildContext context) {
-    Navigator.push(context,
-        new MaterialPageRoute<Null>(builder: (BuildContext context) {
-      return new Scaffold(
-        appBar: new AppBar(title: new Text(gift.name)),
-        body: new SizedBox.expand(
-          child: new Hero(
-            tag: gift.name,
-            child: new Text('hey'),
-          ),
-        ),
-      );
-    }));
+    Navigator.push(
+      context,
+      new MaterialPageRoute<Null>(
+        builder: (BuildContext context) => new Hero(
+              tag: gift.id,
+              child: new GiftPage(gift: gift),
+            ),
+      ),
+    );
   }
 
   @override
@@ -58,7 +56,7 @@ class GiftGridItem extends StatelessWidget {
         child: new GridTileBar(
           backgroundColor: Colors.black45,
           title: new _GridTitleText(gift.name),
-          subtitle: new _GridTitleText(gift.description??''),
+          subtitle: new _GridTitleText(gift.description ?? ''),
           trailing: new Icon(
             Icons.shopping_cart,
             color: Colors.white,
