@@ -56,7 +56,7 @@ class _ListPageState extends State<ListPage> {
         child: new Scrollbar(
           child: new StoreConnector<AppState, List<WishList>>(
             converter: (store) => fromGroup
-                ? store.state.selectedGroup.wishLists
+                ? store.state.selectedGroup.wishLists ?? []
                 : store.state.wishLists,
             builder: (context, wishLists) => new ListView(
                   padding: new EdgeInsets.symmetric(vertical: 8.0),

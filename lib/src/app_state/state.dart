@@ -29,8 +29,8 @@ class CurrentWishListState {
 }
 
 class AppState {
-  List<Group> groups;
-  List<WishList> wishLists;
+  final List<Group> groups;
+  final List<WishList> wishLists;
   final CurrentWishListState selectedList;
   final CurrentGroupState selectedGroup;
 

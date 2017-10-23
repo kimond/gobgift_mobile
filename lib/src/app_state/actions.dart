@@ -16,7 +16,7 @@ class SetSelectedGroupAction extends IsAction {
   @override
   AppState handle(AppState state) {
     CurrentGroupState selectedGroup =
-        new CurrentGroupState(group: group, wishLists: []);
+        new CurrentGroupState(group: group, wishLists: null);
     return state.apply(selectedGroup: selectedGroup);
   }
 }
@@ -29,22 +29,22 @@ class FetchListsForSelectedGroupAction extends IsAsyncAction {
   @override
   Future<Null> handle(Store<AppState> store) async {
     await _authService.init();
-    final listApi = new GroupsApi(_authService);
+    final groupApi = new GroupsApi(_authService);
     List<WishList> wishLists =
-        await listApi.getLists(store.state.selectedGroup.group);
-    store.dispatch(new SetSelectedGroupListsAction(wishLists));
+        await groupApi.getLists(store.state.selectedGroup.group);
+    store.dispatch(new SetListsForSelectedGroupAction(wishLists));
   }
 }
 
-class SetSelectedGroupListsAction extends IsAction {
+class SetListsForSelectedGroupAction extends IsAction {
   final List<WishList> wishLists;
 
-  SetSelectedGroupListsAction(this.wishLists);
+  SetListsForSelectedGroupAction(this.wishLists);
 
   @override
   AppState handle(AppState state) {
-    return state.apply(
-        selectedGroup: state.selectedGroup.apply(wishLists: wishLists));
+    final selectedGroup = state.selectedGroup?.apply(wishLists: wishLists);
+    return state.apply(selectedGroup: selectedGroup);
   }
 }
 
@@ -61,10 +61,10 @@ class SetSelectedListAction extends IsAction {
   }
 }
 
-class SetSelectedListGiftsAction extends IsAction {
+class SetGiftsForSelectedListAction extends IsAction {
   final List<Gift> gifts;
 
-  SetSelectedListGiftsAction(this.gifts);
+  SetGiftsForSelectedListAction(this.gifts);
 
   @override
   AppState handle(AppState state) {
@@ -83,7 +83,7 @@ class FetchGiftsForSelectedListAction extends IsAsyncAction {
     final listApi = new ListsApi(_authService);
     List<Gift> gifts =
         await listApi.getGifts(store.state.selectedList.wishList);
-    store.dispatch(new SetSelectedListGiftsAction(gifts));
+    store.dispatch(new SetGiftsForSelectedListAction(gifts));
   }
 }
 

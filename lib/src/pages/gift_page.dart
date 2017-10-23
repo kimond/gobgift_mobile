@@ -26,8 +26,6 @@ class _GiftPageState extends State<GiftPage> {
   final Gift gift;
   final double _appBarHeight = 256.0;
 
-  AppBarBehavior _appBarBehavior = AppBarBehavior.pinned;
-
   _GiftPageState({this.store, this.gift});
 
   Future<Null> fetchGifts() async {
@@ -36,6 +34,20 @@ class _GiftPageState extends State<GiftPage> {
 
   void initState() {
     super.initState();
+  }
+
+  Widget giftPhoto() {
+    return gift.photo != null
+        ? new Image.network(
+            gift.photo,
+            fit: BoxFit.cover,
+            height: _appBarHeight,
+          )
+        : new Image.asset(
+            'lib/assets/giftplaceholder.png',
+            fit: BoxFit.cover,
+            height: _appBarHeight,
+          );
   }
 
   Future<Null> _handleRefresh() async {}
@@ -47,7 +59,10 @@ class _GiftPageState extends State<GiftPage> {
         slivers: <Widget>[
           new SliverAppBar(
             expandedHeight: _appBarHeight,
+            backgroundColor: Colors.transparent,
             pinned: true,
+            floating: false,
+            snap: false,
             actions: <Widget>[
               new IconButton(
                 icon: const Icon(Icons.edit),
@@ -60,19 +75,15 @@ class _GiftPageState extends State<GiftPage> {
               background: new Stack(
                 fit: StackFit.expand,
                 children: <Widget>[
-                  new Image.asset(
-                    'lib/assets/giftplaceholder.png',
-                    fit: BoxFit.cover,
-                    height: _appBarHeight,
-                  ),
+                  giftPhoto(),
                   const DecoratedBox(
                     decoration: const BoxDecoration(
                       gradient: const LinearGradient(
                           begin: const Alignment(0.0, -1.0),
                           end: const Alignment(0.0, -0.4),
                           colors: const <Color>[
-                            const Color(0x60000000),
-                            const Color(0x00000000)
+                            Colors.black54,
+                            Colors.transparent
                           ]),
                     ),
                   ),
@@ -82,18 +93,24 @@ class _GiftPageState extends State<GiftPage> {
           ),
           new SliverList(
             delegate: new SliverChildListDelegate(<Widget>[
-              new ListTile(
-                leading: const Icon(Icons.monetization_on),
-                title: new Text(gift.price.toString()),
-              ),
-              new ListTile(
-                leading: const Icon(Icons.store),
-                title: new Text(gift.store),
-              ),
-              new ListTile(
-                leading: const Icon(Icons.link),
-                title: new Text(gift.website),
-              ),
+              gift.price != null
+                  ? new ListTile(
+                      leading: const Icon(Icons.monetization_on),
+                      title: new Text(gift.price.toString()),
+                    )
+                  : null,
+              gift.store != null
+                  ? new ListTile(
+                      leading: const Icon(Icons.store),
+                      title: new Text(gift.store),
+                    )
+                  : null,
+              gift.website != null
+                  ? new ListTile(
+                      leading: const Icon(Icons.link),
+                      title: new Text(gift.website),
+                    )
+                  : null,
               new Divider(height: 32.0),
               new Container(
                 margin: new EdgeInsets.all(16.0),
@@ -102,7 +119,10 @@ class _GiftPageState extends State<GiftPage> {
                   children: <Widget>[
                     new Container(
                       margin: new EdgeInsets.only(right: 32.0),
-                      child: new Icon(Icons.description, color: Colors.grey,),
+                      child: new Icon(
+                        Icons.description,
+                        color: Colors.grey,
+                      ),
                     ),
                     new Text("Description",
                         style: Theme.of(context).textTheme.title),
@@ -116,7 +136,7 @@ class _GiftPageState extends State<GiftPage> {
                   style: Theme.of(context).textTheme.subhead,
                 ),
               ),
-            ]),
+            ]..removeWhere((Widget w) => w == null)),
           ),
         ],
       ),

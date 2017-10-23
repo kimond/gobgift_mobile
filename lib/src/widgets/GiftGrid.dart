@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gobgift_mobile/src/models/gift.dart';
 import 'package:gobgift_mobile/src/pages/gift_page.dart';
+import 'package:gobgift_mobile/src/services/config.dart';
 
 class _GridTitleText extends StatelessWidget {
   const _GridTitleText(this.text);
@@ -43,8 +44,13 @@ class GiftGridItem extends StatelessWidget {
       child: new Hero(
         key: new Key('${gift.id}'),
         tag: gift.id,
-        child: new Image.asset('lib/assets/giftplaceholder.png',
-            fit: BoxFit.cover),
+        child: gift.photo != null
+            ? new Image.network(
+                gift.photo,
+                fit: BoxFit.cover,
+              )
+            : new Image.asset('lib/assets/giftplaceholder.png',
+                fit: BoxFit.cover),
       ),
     );
 
