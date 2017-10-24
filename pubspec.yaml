@@ -11,6 +11,7 @@ dependencies:
   google_sign_in: "^0.3.1"
   shared_preferences: "^0.2.5"
   json_serializable: "^0.2.4+1"
+  image_picker: "^0.1.1"
 
 dev_dependencies:
   flutter_test:

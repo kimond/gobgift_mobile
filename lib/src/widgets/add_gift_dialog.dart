@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gobgift_mobile/app_state.dart';
 import 'package:gobgift_mobile/src/models/gift.dart';
 import 'package:gobgift_mobile/src/services/auth_service.dart';
 import 'package:gobgift_mobile/src/services/gobgift_api.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:redux/redux.dart';
 
 class AddGiftDialog extends StatefulWidget {
@@ -18,9 +20,12 @@ class AddGiftDialog extends StatefulWidget {
 
 class _AddGiftDialogState extends State<AddGiftDialog> {
   final Store<AppState> store;
+  File imageFile;
   final TextEditingController _nameCtrl = new TextEditingController();
+  final TextEditingController _priceCtrl = new TextEditingController();
   final TextEditingController _descriptionCtrl = new TextEditingController();
   final TextEditingController _storeCtrl = new TextEditingController();
+  final TextEditingController _websiteCtrl = new TextEditingController();
   final _authService = new AuthService();
   GobgiftApi api;
 
@@ -33,8 +38,10 @@ class _AddGiftDialogState extends State<AddGiftDialog> {
       null,
       store.state.selectedList.wishList.id,
       _nameCtrl.text,
+      price: double.parse(_priceCtrl.text),
       description: _descriptionCtrl.text,
       store: _storeCtrl.text,
+      website: _websiteCtrl.text,
     );
     try {
       newGift = await api.add(newGift);
@@ -42,6 +49,13 @@ class _AddGiftDialogState extends State<AddGiftDialog> {
     } on Exception catch (e) {
       print(e);
     }
+  }
+
+  getImage() async {
+    var _fileName = await ImagePicker.pickImage();
+    setState(() {
+      imageFile = _fileName;
+    });
   }
 
   @override
@@ -67,23 +81,59 @@ class _AddGiftDialogState extends State<AddGiftDialog> {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: new TextField(
               controller: _nameCtrl,
-              decoration: new InputDecoration(hintText: 'Gift name'),
+              decoration: new InputDecoration(labelText: 'Name'),
             ),
           ),
           new Container(
+              child: new Column(
+            children: <Widget>[
+              imageFile != null
+                  ? new Image.file(
+                      imageFile,
+                      height: 300.0,
+                    )
+                  : null,
+              new RaisedButton(
+                  child: new ListTile(
+                    leading: const Icon(Icons.photo),
+                    title: new Text('Upload a photo'),
+                  ),
+                  onPressed: getImage)
+            ]..removeWhere((Widget w) => w == null),
+          )),
+          new Container(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: new TextField(
-              controller: _descriptionCtrl,
-              decoration: new InputDecoration(hintText: 'Description'),
+              keyboardType: TextInputType.number,
+              controller: _priceCtrl,
+              decoration: new InputDecoration(
+                  icon: const Icon(Icons.monetization_on), labelText: 'Price'),
             ),
           ),
           new Container(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: new TextField(
               controller: _storeCtrl,
-              decoration: new InputDecoration(hintText: 'Store'),
+              decoration: new InputDecoration(
+                  icon: const Icon(Icons.store), labelText: 'Store'),
             ),
-          )
+          ),
+          new Container(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: new TextField(
+              controller: _websiteCtrl,
+              decoration: new InputDecoration(
+                  icon: const Icon(Icons.link), labelText: 'Website'),
+            ),
+          ),
+          new Container(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: new TextField(
+              controller: _descriptionCtrl,
+              decoration: new InputDecoration(labelText: 'Description'),
+              maxLines: 2,
+            ),
+          ),
         ],
       )),
       floatingActionButton: null,
