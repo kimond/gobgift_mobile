@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:gobgift_mobile/src/models/gift.dart';
 import 'package:gobgift_mobile/src/models/group.dart';
 import 'package:gobgift_mobile/src/models/wish_list.dart';
 import 'package:gobgift_mobile/src/services/auth_service.dart';
+import 'package:http/http.dart';
 
 abstract class RestResource {
   int get id;
@@ -73,6 +75,33 @@ class GiftApi extends GobgiftApi<Gift> {
   @override
   Gift Function(Map<String, dynamic>) get reviver =>
       (json) => new Gift.fromJson(json);
+
+  Future<Gift> addWithPhoto(Gift model, File photo) async {
+    final uri = Uri.parse("$baseUrl/$resourcePath/");
+    final request = new MultipartRequest("POST", uri);
+    request.fields['name'] = model.name;
+    request.fields['wishlist'] = model.wishList.toString();
+    request.fields['description'] = model.description;
+    if (model.price != null) {
+      request.fields['price'] = model.price.toString();
+    }
+    request.fields['website'] = model.website;
+    request.fields['store'] = model.store;
+    request.files.add(
+      await MultipartFile.fromPath('photo', photo.path),
+    );
+    request.headers['Authorization'] = 'token ${_authService.oauthToken}';
+
+    final response = await request.send();
+    if (response.statusCode == 201) {
+      var body = await response.stream.bytesToString();
+      Map<String, dynamic> json = JSON.decode(body);
+      var decoded = reviver(json);
+      return decoded;
+    } else {
+      throw await response.stream.bytesToString();
+    }
+  }
 }
 
 class ListsApi extends GobgiftApi<WishList> {

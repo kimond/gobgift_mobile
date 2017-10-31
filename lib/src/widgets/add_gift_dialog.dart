@@ -33,18 +33,18 @@ class _AddGiftDialogState extends State<AddGiftDialog> {
 
   Future<Null> createGift() async {
     await _authService.init();
-    api = new GiftApi(_authService);
+    final api = new GiftApi(_authService);
     Gift newGift = new Gift(
       null,
       store.state.selectedList.wishList.id,
       _nameCtrl.text,
-      price: double.parse(_priceCtrl.text),
+      price: _priceCtrl.text != "" ? double.parse(_priceCtrl.text): null,
       description: _descriptionCtrl.text,
       store: _storeCtrl.text,
       website: _websiteCtrl.text,
     );
     try {
-      newGift = await api.add(newGift);
+      newGift = await api.addWithPhoto(newGift, imageFile);
       store.dispatch(new AddGiftAction(newGift));
     } on Exception catch (e) {
       print(e);

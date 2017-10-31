@@ -21,11 +21,12 @@ class AuthService {
   bool loggedIn;
   bool _initialized;
   final Client _client = new Client();
+  String oauthToken;
   OauthClient oauthClient;
 
   Future init() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String oauthToken = prefs.getString(KEY_OAUTH_TOKEN);
+    oauthToken = prefs.getString(KEY_OAUTH_TOKEN);
 
     if (oauthToken == null) {
       loggedIn = false;
@@ -75,19 +76,20 @@ class AuthService {
 }
 
 class OauthClient extends _AuthClient {
-  OauthClient(Client client, String token) : super(client, 'token $token');
+  OauthClient(Client client, String token) : super(client, 'token $token', 'application/json');
 }
 
 abstract class _AuthClient extends BaseClient {
   final Client _client;
   final String _authorization;
+  final String _contentType;
 
-  _AuthClient(this._client, this._authorization);
+  _AuthClient(this._client, this._authorization, this._contentType);
 
   @override
   Future<StreamedResponse> send(BaseRequest request) {
     request.headers['Authorization'] = _authorization;
-    request.headers['Content-Type'] = 'application/json';
+    request.headers['Content-Type'] = _contentType;
     return _client.send(request);
   }
 }
