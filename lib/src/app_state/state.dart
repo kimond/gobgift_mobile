@@ -19,12 +19,21 @@ class CurrentGroupState {
 class CurrentWishListState {
   final WishList wishList;
   final List<Gift> gifts;
+  final bool isLoading;
 
-  CurrentWishListState({this.wishList, this.gifts});
+  CurrentWishListState({this.wishList, this.gifts, this.isLoading});
 
-  CurrentWishListState apply({WishList wishList, List<Gift> gifts}) {
+  CurrentWishListState.initial()
+      : wishList = null,
+        gifts = [],
+        isLoading = false;
+
+  CurrentWishListState apply(
+      {WishList wishList, List<Gift> gifts, bool isLoading}) {
     return new CurrentWishListState(
-        wishList: wishList ?? this.wishList, gifts: gifts ?? this.gifts);
+        wishList: wishList ?? this.wishList,
+        gifts: gifts ?? this.gifts,
+        isLoading: isLoading ?? this.isLoading);
   }
 }
 
@@ -37,7 +46,7 @@ class AppState {
   AppState.initial()
       : groups = [],
         wishLists = [],
-        selectedList = null,
+        selectedList = new CurrentWishListState.initial(),
         selectedGroup = null;
 
   AppState._(
@@ -57,6 +66,7 @@ class AppState {
 }
 
 void futureMiddleware<State>(Store<State> store, action, NextDispatcher next) {
+  print(action.toString());
   if (action is IsAsyncAction) {
     action.handle(store as Store<AppState>);
   } else {

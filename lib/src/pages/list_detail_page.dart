@@ -46,14 +46,21 @@ class _ListDetailPageState extends State<ListDetailPage> {
         title: new Text('Gobgift'),
       ),
       body: new RefreshIndicator(
-        key: _refreshIndicatorKey,
-        onRefresh: _handleRefresh,
-        child: new StoreConnector<AppState, List<Gift>>(
-            builder: (context, gifts) => gifts.isNotEmpty
-                ? new GiftGrid(gifts: gifts)
-                : new Text('No gift'),
-            converter: (store) => store.state.selectedList.gifts),
-      ),
+          key: _refreshIndicatorKey,
+          onRefresh: _handleRefresh,
+          child: new StoreConnector<AppState, bool>(
+              builder: (context, isLoading) {
+                if (isLoading == true) {
+                  return new Center(child: new CircularProgressIndicator());
+                } else {
+                  return new StoreConnector<AppState, List<Gift>>(
+                      builder: (context, gifts) => gifts.isNotEmpty
+                          ? new GiftGrid(gifts: gifts)
+                          : new Text('No gift'),
+                      converter: (store) => store.state.selectedList.gifts);
+                }
+              },
+              converter: (store) => store.state.selectedList.isLoading)),
       floatingActionButton: new FloatingActionButton(
         heroTag: 'addGift',
         onPressed: () async {

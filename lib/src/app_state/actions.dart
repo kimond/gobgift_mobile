@@ -81,9 +81,23 @@ class FetchGiftsForSelectedListAction extends IsAsyncAction {
   Future<Null> handle(Store<AppState> store) async {
     await _authService.init();
     final listApi = new ListsApi(_authService);
+    store.dispatch(new SetIsLoadingForSelectedList(true));
     List<Gift> gifts =
         await listApi.getGifts(store.state.selectedList.wishList);
     store.dispatch(new SetGiftsForSelectedListAction(gifts));
+    store.dispatch(new SetIsLoadingForSelectedList(false));
+  }
+}
+
+class SetIsLoadingForSelectedList extends IsAction {
+  final bool loadingStatus;
+
+  SetIsLoadingForSelectedList(this.loadingStatus);
+
+  @override
+  AppState handle(AppState state) {
+    return state.apply(
+        selectedList: state.selectedList.apply(isLoading: loadingStatus));
   }
 }
 
