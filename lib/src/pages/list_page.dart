@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:gobgift_mobile/app_state.dart';
+import 'package:gobgift_mobile/src/models/group.dart';
 import 'package:gobgift_mobile/src/models/wish_list.dart';
 import 'package:gobgift_mobile/src/widgets/add_list_dialog.dart';
 import 'package:gobgift_mobile/src/widgets/wish_list_tile.dart';
@@ -11,21 +12,24 @@ import 'package:redux/redux.dart';
 class ListPage extends StatefulWidget {
   final Store<AppState> store;
   final bool fromGroup;
+  final Group group;
 
-  ListPage({Key key, this.store, this.fromGroup = false}) : super(key: key);
+  ListPage({Key key, this.store, this.fromGroup = false, this.group})
+      : super(key: key);
 
   @override
   _ListPageState createState() =>
-      new _ListPageState(store: store, fromGroup: fromGroup);
+      new _ListPageState(store: store, fromGroup: fromGroup, group: group);
 }
 
 class _ListPageState extends State<ListPage> {
   final Store<AppState> store;
   final bool fromGroup;
+  final Group group;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 
-  _ListPageState({this.store, this.fromGroup});
+  _ListPageState({this.store, this.fromGroup, this.group});
 
   void fetchLists() {
     if (fromGroup == true) {
@@ -37,6 +41,9 @@ class _ListPageState extends State<ListPage> {
 
   void initState() {
     super.initState();
+    if (fromGroup == true) {
+      store.dispatch(new SetSelectedGroupAction(group));
+    }
     fetchLists();
   }
 

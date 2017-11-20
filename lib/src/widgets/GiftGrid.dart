@@ -62,7 +62,7 @@ class GiftGridItem extends StatelessWidget {
         child: new GridTileBar(
           backgroundColor: Colors.black45,
           title: new _GridTitleText(gift.name),
-          subtitle: new _GridTitleText(gift.description ?? ''),
+          subtitle: new Text(gift.description ?? ''),
           trailing: new Icon(
             Icons.shopping_cart,
             color: Colors.white,
