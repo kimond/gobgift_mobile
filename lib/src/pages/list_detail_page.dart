@@ -16,15 +16,16 @@ class ListDetailPage extends StatefulWidget {
   ListDetailPage({Key key, this.store, this.wishList}) : super(key: key);
 
   @override
-  _ListDetailPageState createState() => new _ListDetailPageState(store: store);
+  _ListDetailPageState createState() => new _ListDetailPageState(store: store, wishList: wishList);
 }
 
 class _ListDetailPageState extends State<ListDetailPage> {
   final Store<AppState> store;
+  final WishList wishList;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 
-  _ListDetailPageState({this.store});
+  _ListDetailPageState({this.store, this.wishList});
 
   Future<Null> fetchGifts() async {
     store.dispatch(new FetchGiftsForSelectedListAction());
@@ -32,6 +33,8 @@ class _ListDetailPageState extends State<ListDetailPage> {
 
   void initState() {
     super.initState();
+    store.dispatch(new SetSelectedListAction(wishList));
+    print("init detail");
     fetchGifts();
   }
 

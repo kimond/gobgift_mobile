@@ -47,7 +47,6 @@ class WishListTile extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           new MaterialPageRoute(builder: (BuildContext context) {
-            store.dispatch(new SetSelectedListAction(wishList));
             return new ListDetailPage(store: store, wishList: wishList);
           }),
         );
