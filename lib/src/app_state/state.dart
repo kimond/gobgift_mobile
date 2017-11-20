@@ -10,6 +10,10 @@ class CurrentGroupState {
 
   CurrentGroupState({this.group, this.wishLists});
 
+  CurrentGroupState.initial()
+      : group = null,
+        wishLists = [];
+
   CurrentGroupState apply({Group group, List<WishList> wishLists}) {
     return new CurrentGroupState(
         wishLists: wishLists ?? this.wishLists, group: group ?? this.group);
@@ -47,7 +51,7 @@ class AppState {
       : groups = [],
         wishLists = [],
         selectedList = new CurrentWishListState.initial(),
-        selectedGroup = null;
+        selectedGroup = new CurrentGroupState.initial();
 
   AppState._(
       {this.groups, this.wishLists, this.selectedList, this.selectedGroup});
@@ -66,7 +70,6 @@ class AppState {
 }
 
 void futureMiddleware<State>(Store<State> store, action, NextDispatcher next) {
-  print(action.toString());
   if (action is IsAsyncAction) {
     action.handle(store as Store<AppState>);
   } else {

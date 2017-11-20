@@ -15,8 +15,7 @@ class SetSelectedGroupAction extends IsAction {
 
   @override
   AppState handle(AppState state) {
-    CurrentGroupState selectedGroup =
-        new CurrentGroupState(group: group, wishLists: null);
+    final selectedGroup = state.selectedGroup.apply(group: group);
     return state.apply(selectedGroup: selectedGroup);
   }
 }
@@ -43,7 +42,7 @@ class SetListsForSelectedGroupAction extends IsAction {
 
   @override
   AppState handle(AppState state) {
-    final selectedGroup = state.selectedGroup?.apply(wishLists: wishLists);
+    final selectedGroup = state.selectedGroup.apply(wishLists: wishLists);
     return state.apply(selectedGroup: selectedGroup);
   }
 }
@@ -55,8 +54,7 @@ class SetSelectedListAction extends IsAction {
 
   @override
   AppState handle(AppState state) {
-    CurrentWishListState selectedWishList =
-        new CurrentWishListState(wishList: wishList, gifts: []);
+    final selectedWishList = state.selectedList.apply(wishList: wishList);
     return state.apply(selectedList: selectedWishList);
   }
 }
@@ -108,7 +106,6 @@ class AddGiftAction extends IsAction {
 
   AppState handle(AppState state) {
     List<Gift> gifts = state.selectedList.gifts;
-    print(gifts);
     gifts.add(gift);
     return state.apply(selectedList: state.selectedList.apply(gifts: gifts));
   }

@@ -32,7 +32,7 @@ class _ListPageState extends State<ListPage> {
   _ListPageState({this.store, this.fromGroup, this.group});
 
   void fetchLists() {
-    if (fromGroup == true) {
+    if (fromGroup) {
       store.dispatch(new FetchListsForSelectedGroupAction());
     } else {
       store.dispatch(new FetchListsAction());
@@ -41,7 +41,7 @@ class _ListPageState extends State<ListPage> {
 
   void initState() {
     super.initState();
-    if (fromGroup == true) {
+    if (fromGroup) {
       store.dispatch(new SetSelectedGroupAction(group));
     }
     fetchLists();
