@@ -16,7 +16,8 @@ class ListDetailPage extends StatefulWidget {
   ListDetailPage({Key key, this.store, this.wishList}) : super(key: key);
 
   @override
-  _ListDetailPageState createState() => new _ListDetailPageState(store: store, wishList: wishList);
+  _ListDetailPageState createState() =>
+      new _ListDetailPageState(store: store, wishList: wishList);
 }
 
 class _ListDetailPageState extends State<ListDetailPage> {
@@ -34,7 +35,6 @@ class _ListDetailPageState extends State<ListDetailPage> {
   void initState() {
     super.initState();
     store.dispatch(new SetSelectedListAction(wishList));
-    print("init detail");
     fetchGifts();
   }
 
@@ -53,7 +53,7 @@ class _ListDetailPageState extends State<ListDetailPage> {
           onRefresh: _handleRefresh,
           child: new StoreConnector<AppState, bool>(
               builder: (context, isLoading) {
-                if (isLoading == true) {
+                if (isLoading) {
                   return new Center(child: new CircularProgressIndicator());
                 } else {
                   return new StoreConnector<AppState, List<Gift>>(
