@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:gobgift_mobile/app_state.dart';
+import 'package:gobgift_mobile/src/models/user.dart';
 import 'package:gobgift_mobile/src/models/wish_list.dart';
 import 'package:gobgift_mobile/src/pages/list_detail_page.dart';
 import 'package:gobgift_mobile/src/utils.dart';
@@ -63,19 +65,24 @@ class WishListTile extends StatelessWidget {
           ),
           title: new Text('${wishList.name}'),
           subtitle: secondary,
-          trailing: new PopupMenuButton<TileAction>(
-              onSelected: (TileAction result) =>
-                  _handleMenuSelection(context, result),
-              itemBuilder: (BuildContext context) =>
-                  <PopupMenuEntry<TileAction>>[
-                    new PopupMenuItem<TileAction>(
-                      value: TileAction.delete,
-                      child: new ListTile(
-                        leading: const Icon(Icons.delete),
-                        title: const Text('Delete'),
-                      ),
-                    ),
-                  ]),
+          trailing: new StoreConnector<AppState, User>(
+            builder: (context, user) => user.id == wishList.owner.id
+                ? new PopupMenuButton<TileAction>(
+                    onSelected: (TileAction result) =>
+                        _handleMenuSelection(context, result),
+                    itemBuilder: (BuildContext context) =>
+                        <PopupMenuEntry<TileAction>>[
+                          new PopupMenuItem<TileAction>(
+                            value: TileAction.delete,
+                            child: new ListTile(
+                              leading: const Icon(Icons.delete),
+                              title: const Text('Delete'),
+                            ),
+                          ),
+                        ])
+                : new Text(''),
+            converter: (store) => store.state.user,
+          ),
         ),
       ),
     );

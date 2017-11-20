@@ -4,6 +4,7 @@ import 'package:gobgift_mobile/app_state.dart';
 import 'package:gobgift_mobile/services.dart';
 import 'package:gobgift_mobile/src/models/gift.dart';
 import 'package:gobgift_mobile/src/models/group.dart';
+import 'package:gobgift_mobile/src/models/user.dart';
 import 'package:gobgift_mobile/src/models/wish_list.dart';
 import 'package:gobgift_mobile/src/services/gobgift_api.dart';
 import 'package:redux/redux.dart';
@@ -218,6 +219,31 @@ class AddListAction extends IsAction {
     List<WishList> wishLists = state.wishLists;
     wishLists.add(_wishList);
     return state.apply(wishLists: wishLists);
+  }
+}
+
+class FetchCurrentUserAction extends IsAsyncAction {
+  final _authService = new AuthService();
+
+  FetchCurrentUserAction();
+
+  @override
+  Future<Null> handle(Store<AppState> store) async {
+    await _authService.init();
+    final userApi = new UserApi(_authService);
+    User user = await userApi.getCurrent();
+    store.dispatch(new SetCurrentUserAction(user));
+  }
+}
+
+class SetCurrentUserAction extends IsAction {
+  final User _user;
+
+  SetCurrentUserAction(this._user);
+
+  @override
+  AppState handle(AppState state) {
+    return state.apply(user: _user);
   }
 }
 

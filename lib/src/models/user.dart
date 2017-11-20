@@ -1,11 +1,12 @@
 library models.comment;
 
+import 'package:gobgift_mobile/src/services/gobgift_api.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
 @JsonSerializable()
-class User extends Object with _$UserSerializerMixin {
+class User extends Object with RestResource, _$UserSerializerMixin {
   final int id;
   final String username;
   @JsonKey(name: 'first_name')
