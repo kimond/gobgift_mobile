@@ -10,8 +10,9 @@ import 'package:redux/redux.dart';
 class WishListTile extends StatelessWidget {
   final Store<AppState> store;
   final WishList wishList;
+  final bool fromGroup;
 
-  WishListTile({this.store, this.wishList});
+  WishListTile({this.store, this.wishList, this.fromGroup});
 
   Future _handleMenuSelection(BuildContext context, TileAction value) async {
     if (value == TileAction.delete) {
@@ -42,7 +43,9 @@ class WishListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget secondary;
-    secondary = const Text("Groups:");
+    secondary = fromGroup
+        ? new Text("Owner: ${wishList.owner.username}")
+        : const Text("Groups:");
     return new InkWell(
       onTap: () {
         Navigator.of(context).push(

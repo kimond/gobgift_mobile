@@ -7,11 +7,15 @@ part of models.wish_list;
 // **************************************************************************
 
 WishList _$WishListFromJson(Map<String, dynamic> json) =>
-    new WishList(json['id'] as int, json['name'] as String);
+    new WishList(json['id'] as int, json['name'] as String,
+        owner: json['owner'] == null
+            ? null
+            : new User.fromJson(json['owner'] as Map<String, dynamic>));
 
 abstract class _$WishListSerializerMixin {
   String get name;
   int get _id;
+  User get owner;
   Map<String, dynamic> toJson() {
     var val = <String, dynamic>{
       'name': name,
@@ -24,6 +28,7 @@ abstract class _$WishListSerializerMixin {
     }
 
     writeNotNull('id', _id);
+    val['owner'] = owner;
     return val;
   }
 }

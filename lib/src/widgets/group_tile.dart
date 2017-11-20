@@ -42,7 +42,7 @@ class GroupTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget secondary;
-    secondary = const Text("Owner:");
+    secondary = new Text("Owner: ${group.owner.username}");
     return new InkWell(
       onTap: () {
         Navigator.of(context).push(
