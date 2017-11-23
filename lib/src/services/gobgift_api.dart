@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:gobgift_mobile/src/models/gift.dart';
 import 'package:gobgift_mobile/src/models/group.dart';
+import 'package:gobgift_mobile/src/models/user.dart';
 import 'package:gobgift_mobile/src/models/wish_list.dart';
 import 'package:gobgift_mobile/src/services/auth_service.dart';
 import 'package:http/http.dart';
@@ -148,6 +149,31 @@ class GroupsApi extends GobgiftApi<Group> {
     if (response.statusCode == 200) {
       List<Map<String, dynamic>> json = JSON.decode(response.body);
       return json.map((json) => new WishList.fromJson(json)).toList();
+    } else {
+      throw response.body;
+    }
+  }
+}
+
+class UserApi extends GobgiftApi<User> {
+  UserApi(AuthService authService) : super(authService);
+
+  @override
+  String get resourcePath => 'users';
+
+  @override
+  User Function(Map<String, dynamic>) get reviver =>
+      (json) => new User.fromJson(json);
+
+  Future<User> getCurrent() async {
+    final oauthClient = _authService.oauthClient;
+    var response = await oauthClient
+        .get("$baseUrl/current_user/")
+        .whenComplete(oauthClient.close);
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> json = JSON.decode(response.body);
+      return new User.fromJson(json);
     } else {
       throw response.body;
     }

@@ -69,7 +69,7 @@ class _ListPageState extends State<ListPage> {
                   padding: new EdgeInsets.symmetric(vertical: 8.0),
                   children: wishLists
                       .map((WishList wishList) =>
-                          new WishListTile(store: store, wishList: wishList))
+                          new WishListTile(store: store, wishList: wishList, fromGroup: fromGroup))
                       .toList(),
                 ),
           ),

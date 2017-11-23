@@ -1,6 +1,7 @@
 import 'package:gobgift_mobile/src/app_state/actions.dart';
 import 'package:gobgift_mobile/src/models/gift.dart';
 import 'package:gobgift_mobile/src/models/group.dart';
+import 'package:gobgift_mobile/src/models/user.dart';
 import 'package:gobgift_mobile/src/models/wish_list.dart';
 import 'package:redux/redux.dart';
 
@@ -46,26 +47,34 @@ class AppState {
   final List<WishList> wishLists;
   final CurrentWishListState selectedList;
   final CurrentGroupState selectedGroup;
+  final User user;
 
   AppState.initial()
       : groups = [],
         wishLists = [],
         selectedList = new CurrentWishListState.initial(),
-        selectedGroup = new CurrentGroupState.initial();
+        selectedGroup = new CurrentGroupState.initial(),
+        user = null;
 
   AppState._(
-      {this.groups, this.wishLists, this.selectedList, this.selectedGroup});
+      {this.groups,
+      this.wishLists,
+      this.selectedList,
+      this.selectedGroup,
+      this.user});
 
   AppState apply(
       {List<Group> groups,
       List<WishList> wishLists,
       CurrentWishListState selectedList,
-      CurrentGroupState selectedGroup}) {
+      CurrentGroupState selectedGroup,
+      User user}) {
     return new AppState._(
         groups: groups ?? this.groups,
         wishLists: wishLists ?? this.wishLists,
         selectedList: selectedList ?? this.selectedList,
-        selectedGroup: selectedGroup ?? this.selectedGroup);
+        selectedGroup: selectedGroup ?? this.selectedGroup,
+        user: user ?? this.user);
   }
 }
 
