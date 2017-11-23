@@ -5,6 +5,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:gobgift_mobile/app_state.dart';
 import 'package:gobgift_mobile/src/models/group.dart';
 import 'package:gobgift_mobile/src/widgets/add_group_dialog.dart';
+import 'package:gobgift_mobile/src/widgets/app_drawer.dart';
 import 'package:gobgift_mobile/src/widgets/group_tile.dart';
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
@@ -19,6 +20,7 @@ class GroupPage extends StatefulWidget {
 }
 
 class _GroupPageState extends State<GroupPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final Store<AppState> store;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
@@ -37,9 +39,18 @@ class _GroupPageState extends State<GroupPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      key: _scaffoldKey,
       appBar: new AppBar(
+        leading: new IconButton(
+          icon: new Icon(Icons.menu),
+          alignment: Alignment.centerLeft,
+          onPressed: () {
+            _scaffoldKey.currentState.openDrawer();
+          },
+        ),
         title: new Text('Gobgift'),
       ),
+      drawer: new AppDrawer(store: store),
       body: new RefreshIndicator(
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,

@@ -38,6 +38,7 @@ class _LoginPageState extends State<LoginPage> {
           await googleSignIn.currentUser.authentication;
       bool isLoggedIn = await _authService.login(
           AuthProvider.google, credentials.accessToken);
+      store.dispatch(new FetchCurrentUserAction());
       setState(() {
         _isLoggedIn = isLoggedIn;
       });
@@ -68,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new Text(
-              'You have pushed the button this many times:',
+              'Please sign in to begin!',
             ),
             new RaisedButton(
               color: Colors.red,

@@ -18,7 +18,6 @@ class MyApp extends StatelessWidget {
     '/': (BuildContext c) => new LoginPage(store: store),
   };
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     store.dispatch(new FetchCurrentUserAction());
