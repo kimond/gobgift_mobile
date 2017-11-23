@@ -6,6 +6,7 @@ import 'package:gobgift_mobile/app_state.dart';
 import 'package:gobgift_mobile/src/models/group.dart';
 import 'package:gobgift_mobile/src/models/wish_list.dart';
 import 'package:gobgift_mobile/src/widgets/add_list_dialog.dart';
+import 'package:gobgift_mobile/src/widgets/app_drawer.dart';
 import 'package:gobgift_mobile/src/widgets/wish_list_tile.dart';
 import 'package:redux/redux.dart';
 
@@ -23,6 +24,7 @@ class ListPage extends StatefulWidget {
 }
 
 class _ListPageState extends State<ListPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final Store<AppState> store;
   final bool fromGroup;
   final Group group;
@@ -54,9 +56,18 @@ class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      key: _scaffoldKey,
       appBar: new AppBar(
+        leading: new IconButton(
+          icon: new Icon(Icons.menu),
+          alignment: Alignment.centerLeft,
+          onPressed: () {
+            _scaffoldKey.currentState.openDrawer();
+          },
+        ),
         title: new Text('Gobgift'),
       ),
+      drawer: new AppDrawer(store: store),
       body: new RefreshIndicator(
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,
