@@ -5,8 +5,8 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:gobgift_mobile/app_state.dart';
 import 'package:gobgift_mobile/src/models/gift.dart';
 import 'package:gobgift_mobile/src/models/wish_list.dart';
-import 'package:gobgift_mobile/src/widgets/GiftGrid.dart';
 import 'package:gobgift_mobile/src/widgets/add_gift_dialog.dart';
+import 'package:gobgift_mobile/src/widgets/gift_grid.dart';
 import 'package:redux/redux.dart';
 
 class ListDetailPage extends StatefulWidget {

@@ -247,6 +247,13 @@ class SetCurrentUserAction extends IsAction {
   }
 }
 
+class LogoutAction extends IsAction {
+  @override
+  AppState handle(AppState state) {
+    return state.apply(user: null);
+  }
+}
+
 abstract class IsAction {
   AppState handle(AppState state);
 }

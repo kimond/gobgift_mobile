@@ -4,16 +4,19 @@ import 'package:gobgift_mobile/src/pages/gift_page.dart';
 import 'package:gobgift_mobile/src/services/config.dart';
 
 class _GridTitleText extends StatelessWidget {
-  const _GridTitleText(this.text);
-
   final String text;
+
+  const _GridTitleText(this.text);
 
   @override
   Widget build(BuildContext context) {
     return new FittedBox(
       fit: BoxFit.scaleDown,
       alignment: Alignment.centerLeft,
-      child: new Text(text),
+      child: new Text(
+        text,
+        style: new TextStyle(color: Colors.grey.shade500),
+      ),
     );
   }
 }
